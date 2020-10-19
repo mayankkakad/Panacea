@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser mFirebaseUser=mFirebaseAuth.getCurrentUser();
                 if(mFirebaseUser!=null) {
+                    loggedemail=mFirebaseUser.getEmail();
                     Intent intent=new Intent(MainActivity.this,Home.class);
                     startActivity(intent);
                 }
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         };
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         if(account!=null) {
+            loggedemail=account.getEmail();
             Intent gdone = new Intent(this, Home.class);
             startActivity(gdone);
         }

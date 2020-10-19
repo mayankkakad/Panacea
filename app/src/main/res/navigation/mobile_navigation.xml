@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.panacea.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_sports"
+        android:name="com.example.panacea.ui.sports.SportsFragment"
+        android:label="@string/menu_sports"
+        tools:layout="@layout/fragment_sports" />
+
+    <fragment
+        android:id="@+id/nav_mood"
+        android:name="com.example.panacea.ui.mood.MoodFragment"
+        android:label="@string/menu_mood"
+        tools:layout="@layout/fragment_mood" />
+
+    <fragment
+        android:id="@+id/nav_chat"
+        android:name="com.example.panacea.ui.chat.ChatFragment"
+        android:label="@string/menu_chat"
+        tools:layout="@layout/fragment_chat" />
+
+    <fragment
+        android:id="@+id/nav_motivation"
+        android:name="com.example.panacea.ui.motivation.MotivationFragment"
+        android:label="@string/menu_motivation"
+        tools:layout="@layout/fragment_motivation" />
+
+    <fragment
+        android:id="@+id/nav_helpline"
+        android:name="com.example.panacea.ui.helpline.HelplineFragment"
+        android:label="@string/menu_helpline"
+        tools:layout="@layout/fragment_helpline" />
+
+    <fragment
+        android:id="@+id/nav_faq"
+        android:name="com.example.panacea.ui.faq.FaqFragment"
+        android:label="@string/menu_faq"
+        tools:layout="@layout/fragment_faq" />
+
+</navigation>

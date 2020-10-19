@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:title="@string/menu_home" />
+        <item
+            android:id="@+id/nav_sports"
+            android:title="@string/menu_sports" />
+        <item
+            android:id="@+id/nav_mood"
+            android:title="@string/menu_mood" />
+        <item
+            android:id="@+id/nav_chat"
+            android:title="@string/menu_chat" />
+        <item
+            android:id="@+id/nav_motivation"
+            android:title="@string/menu_motivation" />
+        <item
+            android:id="@+id/nav_helpline"
+            android:title="@string/menu_helpline" />
+        <item
+            android:id="@+id/nav_faq"
+            android:title="@string/menu_faq" />
+        <item
+            android:id="@+id/nav_logout"
+            android:title="@string/menu_logout" />
+    </group>
+</menu>

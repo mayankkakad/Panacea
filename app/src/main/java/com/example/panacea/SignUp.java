@@ -82,7 +82,7 @@ public class SignUp extends AppCompatActivity {
                                 user.put("name", name.getText().toString());
                                 user.put("dob", dob.getText().toString());
                                 user.put("email", emailId.getText().toString());
-                                db.collection("users").add(user);
+                                db.collection("users").document(emailId.getText().toString()).set(user);
                                 Toast.makeText(SignUp.this,"Sign Up Successful",Toast.LENGTH_SHORT).show();
                                 Intent intent=new Intent(SignUp.this,MainActivity.class);
                                 startActivity(intent);

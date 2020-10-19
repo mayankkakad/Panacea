@@ -8,8 +8,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -20,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
 
     EditText emailId,pass;
     Button btnLog;
+    ImageButton gSignIn;
+    GoogleSignInClient mGoogleSignInClient;
     FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private Button signup;
@@ -28,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         btnLog=findViewById(R.id.button);
+        gSignIn=findViewById(R.id.imageButton);
+        GoogleSignInOptions gso=new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        mGoogleSignInClient= GoogleSignIn.getClient(this, gso);
         mFirebaseAuth=FirebaseAuth.getInstance();
         mAuthStateListener=new FirebaseAuth.AuthStateListener() {
             @Override
@@ -39,6 +50,21 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        if(account!=null) {
+            Intent gdone = new Intent(this, Home.class);
+            startActivity(gdone);
+        }
+        gSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (view.getId()) {
+                    case R.id.imageButton:
+                        signIn();
+                        break;
+                }
+            }
+        });
         btnLog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,5 +112,28 @@ public class MainActivity extends AppCompatActivity {
     public void openSignUp() {
         Intent intent=new Intent(this,SignUp.class);
         startActivity(intent);
+    }
+    public void signIn()
+    {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent,536);
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 536) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
+        }
+    }
+    public void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            Toast.makeText(MainActivity.this,"Login Successful",Toast.LENGTH_SHORT).show();
+            Intent gdone = new Intent(this, Home.class);
+            startActivity(gdone);
+        } catch (ApiException e) {
+            Toast.makeText(MainActivity.this,"signInResult:failed code=" + e.getStatusCode(),Toast.LENGTH_SHORT).show();
+        }
     }
 }

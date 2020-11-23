@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -29,6 +30,8 @@ public class PlayFragment extends Fragment {
     FirebaseFirestore db;
     static Spinner sport;
     static View root;
+    Button playButton;
+    TextView hosts;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
@@ -36,6 +39,9 @@ public class PlayFragment extends Fragment {
                 ViewModelProviders.of(this).get(PlayViewModel.class);
         root = inflater.inflate(R.layout.fragment_play, container, false);
         db=FirebaseFirestore.getInstance();
+        playButton=root.findViewById(R.id.button5);
+        hosts=root.findViewById(R.id.textView6);
+        hosts.setVisibility(View.INVISIBLE);
         items=new Vector<String>();
         db.collection("sports").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -55,6 +61,18 @@ public class PlayFragment extends Fragment {
                 }
             }
         });
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sport.setVisibility(View.GONE);
+                playButton.setVisibility(View.GONE);
+                hosts.setVisibility(View.VISIBLE);
+                getHosts();
+            }
+        });
         return root;
+    }
+    public void getHosts() {
+        
     }
 }

@@ -30,7 +30,7 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    static String loggedemail=null;
+    public static String loggedemail=null;
 
     EditText emailId,pass;
     Button btnLog;

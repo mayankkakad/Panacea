@@ -7,9 +7,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.example.panacea.Constants;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,6 +46,13 @@ public class HostFragment extends Fragment {
     TextView req,loc;
     EditText avail,need;
     MapView mv;
+    static String myName;
+    static int av,nd;
+    static Vector<String> requestse,requestsn;
+    static LinearLayout myLeft,myRight;
+    static TextView namet[],aget[];
+    static Button acceptb[],rejectb[];
+    static LinearLayout.LayoutParams lparams,tparams;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
@@ -52,6 +61,8 @@ public class HostFragment extends Fragment {
         root = inflater.inflate(R.layout.fragment_host, container, false);
         db=FirebaseFirestore.getInstance();
         items=new Vector<String>();
+        requestse=new Vector<String>();
+        requestsn=new Vector<String>();
         req=root.findViewById(R.id.textView5);
         req.setVisibility(View.INVISIBLE);
         mv=root.findViewById(R.id.mapView);
@@ -88,13 +99,16 @@ public class HostFragment extends Fragment {
                     need.setError("Cannot be empty!");
                     need.requestFocus();
                 }
-                else
-                    gotoRequests(Integer.parseInt(avail.getText().toString()),Integer.parseInt(need.getText().toString()));
+                else {
+                    av=Integer.parseInt(avail.getText().toString());
+                    nd=Integer.parseInt(need.getText().toString());
+                    gotoRequests();
+                }
             }
         });
         return root;
     }
-    public void gotoRequests(int av,int nd) {
+    public void gotoRequests() {
         sport.setVisibility(View.GONE);
         avail.setVisibility(View.GONE);
         need.setVisibility(View.GONE);
@@ -102,14 +116,79 @@ public class HostFragment extends Fragment {
         loc.setVisibility(View.GONE);
         mv.setVisibility(View.GONE);
         req.setVisibility(View.VISIBLE);
-        Map<String,Integer> data= new HashMap<>();
-        data.put("available",av);
-        data.put("need",nd);
-        db.collection(sport.getSelectedItem().toString()).document(MainActivity.loggedemail).set(data);
-        showRequests();
+        DocumentReference docRef = db.collection("users").document(MainActivity.loggedemail);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        myName=document.get("name").toString();
+                    }
+                    Map<String,Object> data= new HashMap<>();
+                    data.put("email",MainActivity.loggedemail);
+                    data.put("name",myName);
+                    data.put("available",av);
+                    data.put("need",nd);
+                    db.collection(sport.getSelectedItem().toString()).document(MainActivity.loggedemail).set(data);
+                    showRequests();
+                }
+            }
+        });
     }
     public void showRequests() {
-
+        myLeft=(LinearLayout)root.findViewById(R.id.myLeft);
+        myRight=(LinearLayout)root.findViewById(R.id.myRight);
+        lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 120);
+        tparams=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,120);
+        db.collection(MainActivity.loggedemail).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        if(document.get("status").toString().equals("pending")) {
+                            requestse.add(document.get("email").toString());
+                            if(document.get("name").toString()!=null)
+                                requestsn.add(document.get("name").toString());
+                            else
+                                requestsn.add("Unknown");
+                        }
+                    }
+                    namet=new TextView[requestse.size()];
+                    aget=new TextView[requestse.size()];
+                    acceptb=new Button[requestse.size()];
+                    rejectb=new Button[requestse.size()];
+                    for(int i=0;i<requestse.size();i++) {
+                        namet[i]=new TextView(getActivity());
+                        aget[i]=new TextView(getActivity());
+                        acceptb[i]=new Button(getActivity());
+                        rejectb[i]=new Button(getActivity());
+                        namet[i].setLayoutParams(lparams);
+                        aget[i].setLayoutParams(lparams);
+                        acceptb[i].setLayoutParams(lparams);
+                        rejectb[i].setLayoutParams(lparams);
+                        namet[i].setTextSize(20);
+                        aget[i].setTextSize(20);
+                        acceptb[i].setTextSize(14);
+                        rejectb[i].setTextSize(14);
+                        namet[i].setText(requestsn.get(i));
+                        aget[i].setText("Age: ");
+                        acceptb[i].setText("Accept");
+                        rejectb[i].setText("Reject");
+                        TextView t1=new TextView(getActivity());
+                        TextView t2=new TextView(getActivity());
+                        t1.setLayoutParams(tparams);
+                        t2.setLayoutParams(tparams);
+                        myLeft.addView(namet[i]);
+                        myRight.addView(acceptb[i]);
+                        myLeft.addView(aget[i]);
+                        myRight.addView(rejectb[i]);
+                        myLeft.addView(t1);
+                        myRight.addView(t2);
+                    }
+                }
+            }
+        });
     }
 
 }

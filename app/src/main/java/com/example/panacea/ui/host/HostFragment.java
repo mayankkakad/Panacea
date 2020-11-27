@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.panacea.MainActivity;
 import com.example.panacea.R;
+import com.example.panacea.ui.play.PlayFragment;
 import com.example.panacea.ui.sports.SportsFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,6 +30,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -195,6 +197,8 @@ public class HostFragment extends Fragment {
                         aget[i]=new TextView(getActivity());
                         acceptb[i]=new Button(getActivity());
                         rejectb[i]=new Button(getActivity());
+                        acceptb[i].setId(i);
+                        rejectb[i].setId(i+1);
                         namet[i].setLayoutParams(lparams);
                         aget[i].setLayoutParams(lparams);
                         acceptb[i].setLayoutParams(lparams);
@@ -217,10 +221,41 @@ public class HostFragment extends Fragment {
                         myRight.addView(rejectb[i]);
                         myLeft.addView(t1);
                         myRight.addView(t2);
+                        acceptb[i].setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                acceptRequest(view.getId());
+                            }
+                        });
+                        rejectb[i].setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                rejectRequest(view.getId());
+                            }
+                        });
                     }
                 }
             }
         });
     }
-
+    public void acceptRequest(int id) {
+        db.collection(MainActivity.loggedemail).document(requestse.get(id)).update("status","accept");
+        db.collection(Constants.sport).document(MainActivity.loggedemail).update("available", FieldValue.increment(1));
+        db.collection(Constants.sport).document(MainActivity.loggedemail).update("need",FieldValue.increment(-1));
+        Constants.playerlist=new Vector<String>();
+        Constants.playerlist.add(requestse.get(id));
+        HostFragment hf=new HostFragment();
+        FragmentManager manager=getParentFragmentManager();
+        manager.beginTransaction()
+                .replace(R.id.nav_host_fragment,hf)
+                .commit();
+    }
+    public void rejectRequest(int id) {
+        db.collection(MainActivity.loggedemail).document(requestse.get(id-1)).update("status","reject");
+        HostFragment hf=new HostFragment();
+        FragmentManager manager=getParentFragmentManager();
+        manager.beginTransaction()
+                .replace(R.id.nav_host_fragment,hf)
+                .commit();
+    }
 }

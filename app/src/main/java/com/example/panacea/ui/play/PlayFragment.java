@@ -12,12 +12,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.panacea.Constants;
 import com.example.panacea.MainActivity;
 import com.example.panacea.R;
 import com.example.panacea.ui.host.HostViewModel;
+import com.example.panacea.ui.sports.SportsFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -37,7 +40,7 @@ public class PlayFragment extends Fragment {
     FirebaseFirestore db;
     static Spinner sport;
     static View root;
-    Button playButton;
+    Button playButton,backButton;
     TextView hosts;
     static TextView names[],avails[],needs[];
     static Button reqbuts[];
@@ -56,10 +59,18 @@ public class PlayFragment extends Fragment {
         namev=new Vector<String>();
         availv=new Vector<String>();
         needv=new Vector<String>();
+        backButton=root.findViewById(R.id.button6);
         playButton=root.findViewById(R.id.button5);
         hosts=root.findViewById(R.id.textView6);
         hosts.setVisibility(View.INVISIBLE);
+        sport=root.findViewById(R.id.spinner);
         items=new Vector<String>();
+        if(Constants.requests!=null) {
+            sport.setVisibility(View.GONE);
+            playButton.setVisibility(View.GONE);
+            hosts.setVisibility(View.VISIBLE);
+            getHosts(Constants.playsport);
+        }
         db.collection("sports").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -73,7 +84,6 @@ public class PlayFragment extends Fragment {
                         it[i+1]=items.get(i);
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, it);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    sport=root.findViewById(R.id.spinner);
                     sport.setAdapter(adapter);
                 }
             }
@@ -84,12 +94,30 @@ public class PlayFragment extends Fragment {
                 sport.setVisibility(View.GONE);
                 playButton.setVisibility(View.GONE);
                 hosts.setVisibility(View.VISIBLE);
+                Constants.requests=null;
                 getHosts(sport.getSelectedItem().toString());
+            }
+        });
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(Constants.requests!=null) {
+                    for(int i=0;i<Constants.requests.size();i++) {
+                        db.collection(Constants.requests.get(i)).document(MainActivity.loggedemail).delete();
+                    }
+                }
+                SportsFragment sf=new SportsFragment();
+                FragmentManager manager=getParentFragmentManager();
+                manager.beginTransaction()
+                        .replace(R.id.nav_host_fragment,sf)
+                        .commit();
+                Constants.requests=null;
             }
         });
         return root;
     }
     public void getHosts(String sp) {
+        Constants.playsport=sp;
         myLayout=(LinearLayout)root.findViewById(R.id.myLayout);
         buttonLayout=(LinearLayout)root.findViewById(R.id.buttonLayout);
         lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 120);
@@ -99,6 +127,11 @@ public class PlayFragment extends Fragment {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
+                        if(Constants.requests!=null&&Constants.requests.contains(document.get("email").toString())) {
+                            continue;
+                        }
+                        if(document.get("email").toString().equals(MainActivity.loggedemail))
+                            continue;
                         if(document.get("name").toString()!=null)
                             namev.add(document.get("name").toString().split(" ")[0]);
                         else
@@ -174,14 +207,25 @@ public class PlayFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if(document.exists()) {
+                    DocumentSnapshot document = task.getResult();
+                    if(document.exists()) {
                         Map<String,String> data=new HashMap<>();
                         data.put("name",document.get("name").toString());
                         data.put("email",MainActivity.loggedemail);
                         data.put("status","pending");
                         db.collection(emailv.get(index)).document(MainActivity.loggedemail).set(data);
+                        if(Constants.requests==null) {
+                            Constants.requests=new Vector<String>();
+                            Constants.requests.add(emailv.get(index));
+                        }
+                        else
+                            Constants.requests.add(emailv.get(index));
                     }
+                    PlayFragment pf=new PlayFragment();
+                    FragmentManager manager=getParentFragmentManager();
+                    manager.beginTransaction()
+                            .replace(R.id.nav_host_fragment,pf)
+                            .commit();
                 }
             }
         });

@@ -1,7 +1,9 @@
 package com.example.panacea;
+
+import java.util.Vector;
+
 public class Constants {
-	static String sport="";
-	public Constants(String sport) {
-		this.sport=sport;
-	}
+	public static String sport=null;
+	public static Vector<String> requests=null;
+	public static String playsport=null;
 }

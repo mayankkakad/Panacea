@@ -35,6 +35,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.w3c.dom.Document;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -51,13 +53,16 @@ public class HostFragment extends Fragment {
     EditText avail,need;
     MapView mv;
     Button backButton;
+    static boolean flag=false;
     static String myName;
     static int av,nd;
+    static String temp;
     static Vector<String> requestse,requestsn;
     static LinearLayout myLeft,myRight;
     static TextView namet[],aget[];
     static Button acceptb[],rejectb[];
     static LinearLayout.LayoutParams lparams,tparams;
+    static DocumentReference docRef[];
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
@@ -77,21 +82,6 @@ public class HostFragment extends Fragment {
         avail=root.findViewById(R.id.editTextNumber);
         need=root.findViewById(R.id.editTextNumber2);
         backButton=root.findViewById(R.id.button7);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                for(int i=0;i<Constants.requests.size();i++)
-                    db.collection(MainActivity.loggedemail).document(Constants.requests.get(i)).delete();
-                db.collection(Constants.sport).document(MainActivity.loggedemail).delete();
-                Constants.sport=null;
-                Constants.requests=null;
-                SportsFragment sf=new SportsFragment();
-                FragmentManager manager=getParentFragmentManager();
-                manager.beginTransaction()
-                        .replace(R.id.nav_host_fragment,sf)
-                        .commit();
-            }
-        });
         db.collection("sports").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -128,6 +118,25 @@ public class HostFragment extends Fragment {
                 }
             }
         });
+        final DocumentReference docRef=db.collection(MainActivity.loggedemail).document("sport");
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    DocumentSnapshot document=task.getResult();
+                    if(document.exists())
+                        Constants.sport=document.get("sport").toString();
+                    sport.setVisibility(View.GONE);
+                    avail.setVisibility(View.GONE);
+                    need.setVisibility(View.GONE);
+                    hostButton.setVisibility(View.GONE);
+                    loc.setVisibility(View.GONE);
+                    mv.setVisibility(View.GONE);
+                    req.setVisibility(View.VISIBLE);
+                    showRequests();
+                }
+            }
+        });
         if(Constants.sport!=null) {
             sport.setVisibility(View.GONE);
             avail.setVisibility(View.GONE);
@@ -138,6 +147,29 @@ public class HostFragment extends Fragment {
             req.setVisibility(View.VISIBLE);
             showRequests();
         }
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                db.collection(MainActivity.loggedemail).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()) {
+                            for(QueryDocumentSnapshot document : task.getResult()) {
+                                document.getReference().delete();
+                            }
+                        }
+                    }
+                });
+                db.collection(Constants.sport).document(MainActivity.loggedemail).delete();
+                Constants.sport=null;
+                Constants.requests=null;
+                SportsFragment sf=new SportsFragment();
+                FragmentManager manager=getParentFragmentManager();
+                manager.beginTransaction()
+                        .replace(R.id.nav_host_fragment,sf)
+                        .commit();
+            }
+        });
         return root;
     }
     public void gotoRequests() {
@@ -162,7 +194,10 @@ public class HostFragment extends Fragment {
                     data.put("name",myName);
                     data.put("available",av);
                     data.put("need",nd);
+                    Map<String,Object> data1=new HashMap<>();
+                    data1.put("sport",sport.getSelectedItem());
                     db.collection(sport.getSelectedItem().toString()).document(MainActivity.loggedemail).set(data);
+                    db.collection(MainActivity.loggedemail).document("sport").set(data1);
                     showRequests();
                 }
             }
@@ -178,6 +213,8 @@ public class HostFragment extends Fragment {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
+                        if(document.get("status")==null)
+                            continue;
                         if(document.get("status").toString().equals("pending")) {
                             requestse.add(document.get("email").toString());
                             if(document.get("name").toString()!=null)

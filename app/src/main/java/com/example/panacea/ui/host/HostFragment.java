@@ -52,7 +52,7 @@ public class HostFragment extends Fragment {
     TextView req,loc;
     EditText avail,need;
     MapView mv;
-    Button backButton;
+    Button backButton,startGame;
     static boolean flag=false;
     static String myName;
     static int av,nd;
@@ -71,6 +71,8 @@ public class HostFragment extends Fragment {
         root = inflater.inflate(R.layout.fragment_host, container, false);
         db=FirebaseFirestore.getInstance();
         items=new Vector<String>();
+        startGame=root.findViewById(R.id.button8);
+        startGame.setVisibility(View.GONE);
         sport=root.findViewById(R.id.spinner2);
         requestse=new Vector<String>();
         requestsn=new Vector<String>();
@@ -124,16 +126,18 @@ public class HostFragment extends Fragment {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()) {
                     DocumentSnapshot document=task.getResult();
-                    if(document.exists())
-                        Constants.sport=document.get("sport").toString();
-                    sport.setVisibility(View.GONE);
-                    avail.setVisibility(View.GONE);
-                    need.setVisibility(View.GONE);
-                    hostButton.setVisibility(View.GONE);
-                    loc.setVisibility(View.GONE);
-                    mv.setVisibility(View.GONE);
-                    req.setVisibility(View.VISIBLE);
-                    showRequests();
+                    if(document.exists()&&document.get("sport")!=null) {
+                        Constants.sport = document.get("sport").toString();
+                        sport.setVisibility(View.GONE);
+                        avail.setVisibility(View.GONE);
+                        need.setVisibility(View.GONE);
+                        hostButton.setVisibility(View.GONE);
+                        loc.setVisibility(View.GONE);
+                        mv.setVisibility(View.GONE);
+                        req.setVisibility(View.VISIBLE);
+                        startGame.setVisibility(View.VISIBLE);
+                        showRequests();
+                    }
                 }
             }
         });
@@ -145,11 +149,17 @@ public class HostFragment extends Fragment {
             loc.setVisibility(View.GONE);
             mv.setVisibility(View.GONE);
             req.setVisibility(View.VISIBLE);
+            startGame.setVisibility(View.VISIBLE);
             showRequests();
         }
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                DocumentReference delRole=db.collection("users").document(MainActivity.loggedemail);
+                Map<String,Object> data=new HashMap<>();
+                data.put("role", FieldValue.delete());
+                data.put("sport",FieldValue.delete());
+                delRole.update(data);
                 db.collection(MainActivity.loggedemail).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -160,7 +170,7 @@ public class HostFragment extends Fragment {
                         }
                     }
                 });
-                db.collection(Constants.sport).document(MainActivity.loggedemail).delete();
+                try{db.collection(Constants.sport).document(MainActivity.loggedemail).delete();}catch(Exception e){}
                 Constants.sport=null;
                 Constants.requests=null;
                 SportsFragment sf=new SportsFragment();
@@ -180,6 +190,7 @@ public class HostFragment extends Fragment {
         loc.setVisibility(View.GONE);
         mv.setVisibility(View.GONE);
         req.setVisibility(View.VISIBLE);
+        startGame.setVisibility(View.VISIBLE);
         DocumentReference docRef = db.collection("users").document(MainActivity.loggedemail);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -187,7 +198,10 @@ public class HostFragment extends Fragment {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        myName=document.get("name").toString();
+                        if(document.get("name")!=null)
+                            myName=document.get("name").toString();
+                        else
+                            myName="Unknown";
                     }
                     Map<String,Object> data= new HashMap<>();
                     data.put("email",MainActivity.loggedemail);
@@ -202,6 +216,10 @@ public class HostFragment extends Fragment {
                 }
             }
         });
+        Map<String,Object> data=new HashMap<>();
+        data.put("role","host");
+        data.put("sport",sport.getSelectedItem().toString());
+        db.collection("users").document(MainActivity.loggedemail).update(data);
     }
     public void showRequests() {
         myLeft=(LinearLayout)root.findViewById(R.id.myLeft);

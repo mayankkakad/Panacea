@@ -25,9 +25,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import org.w3c.dom.Document;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -71,6 +74,22 @@ public class PlayFragment extends Fragment {
             hosts.setVisibility(View.VISIBLE);
             getHosts(Constants.playsport);
         }
+        DocumentReference check=db.collection("users").document(MainActivity.loggedemail);
+        check.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    DocumentSnapshot document=task.getResult();
+                    if(document.exists()&&document.get("role")!=null) {
+                        sport.setVisibility(View.GONE);
+                        playButton.setVisibility(View.GONE);
+                        hosts.setVisibility(View.VISIBLE);
+                        Constants.requests=null;
+                        getHosts(document.get("sport").toString());
+                    }
+                }
+            }
+        });
         db.collection("sports").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -101,6 +120,11 @@ public class PlayFragment extends Fragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                DocumentReference delRole=db.collection("users").document(MainActivity.loggedemail);
+                Map<String,Object> data=new HashMap<>();
+                data.put("role", FieldValue.delete());
+                data.put("sport",FieldValue.delete());
+                delRole.update(data);
                 if(Constants.requests!=null) {
                     for(int i=0;i<Constants.requests.size();i++) {
                         db.collection(Constants.requests.get(i)).document(MainActivity.loggedemail).delete();
@@ -229,5 +253,9 @@ public class PlayFragment extends Fragment {
                 }
             }
         });
+        Map<String,Object> data=new HashMap<>();
+        data.put("role","play");
+        data.put("sport",sport.getSelectedItem().toString());
+        db.collection("users").document(MainActivity.loggedemail).update(data);
     }
 }

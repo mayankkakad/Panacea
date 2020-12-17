@@ -150,7 +150,10 @@ public class PlayFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
+                    int counter=0;
                     for (QueryDocumentSnapshot document : task.getResult()) {
+                        if(counter++==0&&(Boolean)document.get("start")==true)
+                            break;
                         if(Constants.requests!=null&&Constants.requests.contains(document.get("email").toString())) {
                             continue;
                         }

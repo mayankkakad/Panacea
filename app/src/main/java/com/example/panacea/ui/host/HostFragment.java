@@ -36,6 +36,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,6 +54,7 @@ public class HostFragment extends Fragment {
     EditText avail,need;
     MapView mv;
     Button backButton,startGame;
+    static Boolean letGo=false;
     static boolean flag=false;
     static String myName;
     static int av,nd;
@@ -63,6 +65,9 @@ public class HostFragment extends Fragment {
     static Button acceptb[],rejectb[];
     static LinearLayout.LayoutParams lparams,tparams;
     static DocumentReference docRef[];
+    static TextView plnames[];
+    static Button plremove[];
+    static Vector<String> playerse,playersn;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
@@ -180,6 +185,12 @@ public class HostFragment extends Fragment {
                         .commit();
             }
         });
+        startGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                letsStart();
+            }
+        });
         return root;
     }
     public void gotoRequests() {
@@ -208,6 +219,7 @@ public class HostFragment extends Fragment {
                     data.put("name",myName);
                     data.put("available",av);
                     data.put("need",nd);
+                    data.put("start",false);
                     Map<String,Object> data1=new HashMap<>();
                     data1.put("sport",sport.getSelectedItem());
                     db.collection(sport.getSelectedItem().toString()).document(MainActivity.loggedemail).set(data);
@@ -226,72 +238,88 @@ public class HostFragment extends Fragment {
         myRight=(LinearLayout)root.findViewById(R.id.myRight);
         lparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 120);
         tparams=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,120);
-        db.collection(MainActivity.loggedemail).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection(Constants.sport).document(MainActivity.loggedemail).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        if(document.get("status")==null)
-                            continue;
-                        if(document.get("status").toString().equals("pending")) {
-                            requestse.add(document.get("email").toString());
-                            if(document.get("name").toString()!=null)
-                                requestsn.add(document.get("name").toString());
-                            else
-                                requestsn.add("Unknown");
-                        }
+                    DocumentSnapshot document=task.getResult();
+                    if(document.get("start")!=null&&(Boolean)document.get("start")==true) {
+                        letGo=true;
+                        letsStart();
                     }
-                    namet=new TextView[requestse.size()];
-                    aget=new TextView[requestse.size()];
-                    acceptb=new Button[requestse.size()];
-                    rejectb=new Button[requestse.size()];
-                    for(int i=0;i<requestse.size();i++) {
-                        Constants.requests=new Vector<String>();
-                        Constants.requests.add(requestse.get(i));
-                        namet[i]=new TextView(getActivity());
-                        aget[i]=new TextView(getActivity());
-                        acceptb[i]=new Button(getActivity());
-                        rejectb[i]=new Button(getActivity());
-                        acceptb[i].setId(i);
-                        rejectb[i].setId(i+1);
-                        namet[i].setLayoutParams(lparams);
-                        aget[i].setLayoutParams(lparams);
-                        acceptb[i].setLayoutParams(lparams);
-                        rejectb[i].setLayoutParams(lparams);
-                        namet[i].setTextSize(20);
-                        aget[i].setTextSize(20);
-                        acceptb[i].setTextSize(14);
-                        rejectb[i].setTextSize(14);
-                        namet[i].setText(requestsn.get(i));
-                        aget[i].setText("Age: ");
-                        acceptb[i].setText("Accept");
-                        rejectb[i].setText("Reject");
-                        TextView t1=new TextView(getActivity());
-                        TextView t2=new TextView(getActivity());
-                        t1.setLayoutParams(tparams);
-                        t2.setLayoutParams(tparams);
-                        myLeft.addView(namet[i]);
-                        myRight.addView(acceptb[i]);
-                        myLeft.addView(aget[i]);
-                        myRight.addView(rejectb[i]);
-                        myLeft.addView(t1);
-                        myRight.addView(t2);
-                        acceptb[i].setOnClickListener(new View.OnClickListener() {
+                    else {
+                        db.collection(MainActivity.loggedemail).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
-                            public void onClick(View view) {
-                                acceptRequest(view.getId());
-                            }
-                        });
-                        rejectb[i].setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                rejectRequest(view.getId());
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if(task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        if(document.get("status")==null)
+                                            continue;
+                                        if(document.get("status").toString().equals("pending")) {
+                                            requestse.add(document.get("email").toString());
+                                            if(document.get("name").toString()!=null)
+                                                requestsn.add(document.get("name").toString());
+                                            else
+                                                requestsn.add("Unknown");
+                                        }
+                                    }
+                                    namet=new TextView[requestse.size()];
+                                    aget=new TextView[requestse.size()];
+                                    acceptb=new Button[requestse.size()];
+                                    rejectb=new Button[requestse.size()];
+                                    for(int i=0;i<requestse.size();i++) {
+                                        Constants.requests=new Vector<String>();
+                                        Constants.requests.add(requestse.get(i));
+                                        namet[i]=new TextView(getActivity());
+                                        aget[i]=new TextView(getActivity());
+                                        acceptb[i]=new Button(getActivity());
+                                        rejectb[i]=new Button(getActivity());
+                                        acceptb[i].setId(i);
+                                        rejectb[i].setId(i+1);
+                                        namet[i].setLayoutParams(lparams);
+                                        aget[i].setLayoutParams(lparams);
+                                        acceptb[i].setLayoutParams(lparams);
+                                        rejectb[i].setLayoutParams(lparams);
+                                        namet[i].setTextSize(20);
+                                        aget[i].setTextSize(20);
+                                        acceptb[i].setTextSize(14);
+                                        rejectb[i].setTextSize(14);
+                                        namet[i].setText(requestsn.get(i));
+                                        aget[i].setText("Age: ");
+                                        acceptb[i].setText("Accept");
+                                        rejectb[i].setText("Reject");
+                                        TextView t1=new TextView(getActivity());
+                                        TextView t2=new TextView(getActivity());
+                                        t1.setLayoutParams(tparams);
+                                        t2.setLayoutParams(tparams);
+                                        myLeft.addView(namet[i]);
+                                        myRight.addView(acceptb[i]);
+                                        myLeft.addView(aget[i]);
+                                        myRight.addView(rejectb[i]);
+                                        myLeft.addView(t1);
+                                        myRight.addView(t2);
+                                        acceptb[i].setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                acceptRequest(view.getId());
+                                            }
+                                        });
+                                        rejectb[i].setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                rejectRequest(view.getId());
+                                            }
+                                        });
+                                    }
+                                }
                             }
                         });
                     }
                 }
             }
         });
+        if(letGo)
+            return;
     }
     public void acceptRequest(int id) {
         db.collection(MainActivity.loggedemail).document(requestse.get(id)).update("status","accept");
@@ -312,5 +340,65 @@ public class HostFragment extends Fragment {
         manager.beginTransaction()
                 .replace(R.id.nav_host_fragment,hf)
                 .commit();
+    }
+    public void removePlayer(int id) {
+
+    }
+    public void letsStart() {
+        TextView reqwala=root.findViewById(R.id.textView5);
+        reqwala.setText("Players");
+        playerse=new Vector<String>();
+        playersn=new Vector<String>();
+        backButton.setVisibility(View.GONE);
+        startGame.setVisibility(View.GONE);
+        myLeft.removeAllViews();
+        myRight.removeAllViews();
+        db.collection(MainActivity.loggedemail).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()) {
+                    for(QueryDocumentSnapshot document: task.getResult()) {
+                        if(document.get("status")!=null&&document.get("status").toString().equals("accept")) {
+                            playerse.add(document.get("email").toString());
+                            if(document.get("name")==null)
+                                playersn.add("Unknown");
+                            else
+                                playersn.add(document.get("name").toString());
+                        }
+                    }
+                    plnames=new TextView[playerse.size()];
+                    plremove=new Button[playerse.size()];
+                    for(int i=0;i<plnames.length;i++) {
+                        plnames[i]=new TextView(getActivity());
+                        plremove[i]=new Button(getActivity());
+                        plnames[i].setId(i);
+                        plremove[i].setId(i+1);
+                        plnames[i].setLayoutParams(lparams);
+                        plremove[i].setLayoutParams(lparams);
+                        plnames[i].setTextSize(20);
+                        plremove[i].setTextSize(14);
+                        plnames[i].setText(playersn.get(i));
+                        plremove[i].setText("Remove");
+                        TextView t1=new TextView(getActivity());
+                        TextView t2=new TextView(getActivity());
+                        t1.setLayoutParams(tparams);
+                        t2.setLayoutParams(tparams);
+                        myLeft.addView(plnames[i]);
+                        myRight.addView(plremove[i]);
+                        myLeft.addView(t1);
+                        myRight.addView(t2);
+                        plremove[i].setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                removePlayer(view.getId());
+                            }
+                        });
+                    }
+                }
+            }
+        });
+        Map<String,Object> data=new HashMap<>();
+        data.put("start",true);
+        db.collection(Constants.sport).document(MainActivity.loggedemail).update(data);
     }
 }

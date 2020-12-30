@@ -30,8 +30,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -53,12 +55,13 @@ public class HostFragment extends Fragment {
     TextView req,loc;
     EditText avail,need;
     MapView mv;
-    Button backButton,startGame;
+    Button backButton,startGame,refresh;
     static Boolean letGo=false;
     static boolean flag=false;
     static String myName;
     static int av,nd;
     static String temp;
+    static boolean gameStarted=false;
     static Vector<String> requestse,requestsn;
     static LinearLayout myLeft,myRight;
     static TextView namet[],aget[];
@@ -89,6 +92,8 @@ public class HostFragment extends Fragment {
         avail=root.findViewById(R.id.editTextNumber);
         need=root.findViewById(R.id.editTextNumber2);
         backButton=root.findViewById(R.id.button7);
+        refresh=root.findViewById(R.id.button9);
+        refresh.setVisibility(View.GONE);
         db.collection("sports").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -141,6 +146,7 @@ public class HostFragment extends Fragment {
                         mv.setVisibility(View.GONE);
                         req.setVisibility(View.VISIBLE);
                         startGame.setVisibility(View.VISIBLE);
+                        refresh.setVisibility(View.VISIBLE);
                         showRequests();
                     }
                 }
@@ -155,6 +161,7 @@ public class HostFragment extends Fragment {
             mv.setVisibility(View.GONE);
             req.setVisibility(View.VISIBLE);
             startGame.setVisibility(View.VISIBLE);
+            refresh.setVisibility(View.VISIBLE);
             showRequests();
         }
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -191,6 +198,12 @@ public class HostFragment extends Fragment {
                 letsStart();
             }
         });
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showRequests();
+            }
+        });
         return root;
     }
     public void gotoRequests() {
@@ -202,6 +215,7 @@ public class HostFragment extends Fragment {
         mv.setVisibility(View.GONE);
         req.setVisibility(View.VISIBLE);
         startGame.setVisibility(View.VISIBLE);
+        refresh.setVisibility(View.VISIBLE);
         DocumentReference docRef = db.collection("users").document(MainActivity.loggedemail);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -318,11 +332,19 @@ public class HostFragment extends Fragment {
                 }
             }
         });
-        if(letGo)
-            return;
     }
     public void acceptRequest(int id) {
+        if(id==-1)
+        {
+            HostFragment hf=new HostFragment();
+            FragmentManager manager=getParentFragmentManager();
+            manager.beginTransaction()
+                    .replace(R.id.nav_host_fragment,hf)
+                    .commit();
+            return;
+        }
         db.collection(MainActivity.loggedemail).document(requestse.get(id)).update("status","accept");
+        db.collection("users").document(requestse.get(id)).update("host",MainActivity.loggedemail);
         db.collection(Constants.sport).document(MainActivity.loggedemail).update("available", FieldValue.increment(1));
         db.collection(Constants.sport).document(MainActivity.loggedemail).update("need",FieldValue.increment(-1));
         Constants.playerlist=new Vector<String>();
@@ -342,15 +364,48 @@ public class HostFragment extends Fragment {
                 .commit();
     }
     public void removePlayer(int id) {
-
+        int index=id-100;
+        db.collection(MainActivity.loggedemail).document(playerse.get(index)).update("status","reject");
+        db.collection("users").document(playerse.get(index)).update("host",null);
+        HostFragment hf=new HostFragment();
+        FragmentManager manager=getParentFragmentManager();
+        manager.beginTransaction()
+                .replace(R.id.nav_host_fragment,hf)
+                .commit();
     }
     public void letsStart() {
+        if(gameStarted) {
+            DocumentReference delRole=db.collection("users").document(MainActivity.loggedemail);
+            Map<String,Object> data=new HashMap<>();
+            data.put("role", FieldValue.delete());
+            data.put("sport",FieldValue.delete());
+            delRole.update(data);
+            db.collection(MainActivity.loggedemail).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if(task.isSuccessful()) {
+                        for(QueryDocumentSnapshot document : task.getResult()) {
+                            document.getReference().delete();
+                        }
+                    }
+                }
+            });
+            try{db.collection(Constants.sport).document(MainActivity.loggedemail).delete();}catch(Exception e){}
+            Constants.sport=null;
+            Constants.requests=null;
+            SportsFragment sf=new SportsFragment();
+            FragmentManager manager=getParentFragmentManager();
+            manager.beginTransaction()
+                    .replace(R.id.nav_host_fragment,sf)
+                    .commit();
+            return;
+        }
         TextView reqwala=root.findViewById(R.id.textView5);
         reqwala.setText("Players");
         playerse=new Vector<String>();
         playersn=new Vector<String>();
         backButton.setVisibility(View.GONE);
-        startGame.setVisibility(View.GONE);
+        startGame.setText("End");
         myLeft.removeAllViews();
         myRight.removeAllViews();
         db.collection(MainActivity.loggedemail).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -366,13 +421,14 @@ public class HostFragment extends Fragment {
                                 playersn.add(document.get("name").toString());
                         }
                     }
+                    gameStarted=true;
                     plnames=new TextView[playerse.size()];
                     plremove=new Button[playerse.size()];
                     for(int i=0;i<plnames.length;i++) {
                         plnames[i]=new TextView(getActivity());
                         plremove[i]=new Button(getActivity());
                         plnames[i].setId(i);
-                        plremove[i].setId(i+1);
+                        plremove[i].setId(i+100);
                         plnames[i].setLayoutParams(lparams);
                         plremove[i].setLayoutParams(lparams);
                         plnames[i].setTextSize(20);

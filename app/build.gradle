@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.chaquo.python'
 apply plugin: 'com.google.gms.google-services'
 
 android {
@@ -6,12 +7,36 @@ android {
 
     defaultConfig {
         applicationId "com.example.panacea"
+        python {
+            pip {
+                install "numpy"
+                install "pandas"
+                install "sklearn"
+                install "apyori"
+            }
+        }
+        sourceSets{
+            main{
+                python{
+                    srcDirs=["src/main/python"]
+                }
+            }
+        }
         minSdkVersion 23
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+        }
+
+        python{
+            buildPython "C:\\Users\\Mayank Kakad\\AppData\\Local\\Programs\\Python\\Python37-32\\python.exe"
+        }
     }
 
     buildTypes {

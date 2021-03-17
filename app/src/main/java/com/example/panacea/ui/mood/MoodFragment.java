@@ -1,19 +1,29 @@
 package com.example.panacea.ui.mood;
 
+import android.content.Intent;
+import android.graphics.Color;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.bumptech.glide.Glide;
 import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
 import com.chaquo.python.android.AndroidPlatform;
@@ -21,6 +31,11 @@ import com.example.panacea.R;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.util.Scanner;
 import java.util.Vector;
 
 public class MoodFragment extends Fragment {
@@ -28,23 +43,39 @@ public class MoodFragment extends Fragment {
     private MoodViewModel moodViewModel;
     SeekBar anxiety,anger,hopelessness,boredom,sadness;
     TextView anxiety_points,anger_points,hopelessness_points,boredom_points,sadness_points;
-    Button getContentButton;
+    Button getContentButton,provideContentButton;
+    TextView heading,anx,ang,hop,bor,sad;
+    static LinearLayout.LayoutParams params;
+    static LinearLayout myLinearLayout;
+    static ScrollView myScrollView;
+    static View root;
+    String myGames[];
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
         moodViewModel =
                 ViewModelProviders.of(this).get(MoodViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_mood, container, false);
+        root = inflater.inflate(R.layout.fragment_mood, container, false);
         moodViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
             }
         });
+        heading=(TextView)root.findViewById(R.id.textView12);
+        anx=(TextView)root.findViewById(R.id.textView7);
+        ang=(TextView)root.findViewById(R.id.textView8);
+        hop=(TextView)root.findViewById(R.id.textView9);
+        bor=(TextView)root.findViewById(R.id.textView10);
+        sad=(TextView)root.findViewById(R.id.textView11);
         anxiety= (SeekBar) root.findViewById(R.id.seekBar8);
         anger= (SeekBar) root.findViewById(R.id.seekBar9);
         hopelessness= (SeekBar) root.findViewById(R.id.seekBar10);
         boredom= (SeekBar) root.findViewById(R.id.seekBar11);
         sadness= (SeekBar) root.findViewById(R.id.seekBar12);
+        myScrollView=(ScrollView)root.findViewById(R.id.myScrollView);
+        myLinearLayout=(LinearLayout)root.findViewById(R.id.myLinearLayout);
+        myScrollView.setVisibility(View.GONE);
+        myLinearLayout.setVisibility(View.GONE);
         anxiety.setMax(5);
         anxiety.setProgress(0);
         anger.setMax(5);
@@ -66,6 +97,7 @@ public class MoodFragment extends Fragment {
         sadness_points=(TextView)root.findViewById(R.id.textView21);
         sadness_points.setText("0");
         getContentButton=(Button)root.findViewById(R.id.button12);
+        provideContentButton=(Button)root.findViewById(R.id.button13);
         anxiety.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -155,7 +187,7 @@ public class MoodFragment extends Fragment {
         return root;
     }
     public void getContent(int anx_points,int ang_points,int hope_points,int bore_points,int sad_points) {
-        getContentButton.setText("Loading...");
+        heading.setText("Loading...");
         if(!Python.isStarted())
             Python.start(new AndroidPlatform(getActivity()));
         Python py=Python.getInstance();
@@ -213,6 +245,119 @@ public class MoodFragment extends Fragment {
         anxiety_points.setText(t1);
         anger_points.setText(t2);
         hopelessness_points.setText(t3);*/
-        getContentButton.setText("Get Content");
+        showContent(memelist,gamelist,movielist);
+    }
+    public void showContent(Vector<String> memelist,Vector<String> gamelist,Vector<String> movielist) {
+        heading.setText("Content based on you Mood");
+        anx.setVisibility(View.GONE);
+        ang.setVisibility(View.GONE);
+        hop.setVisibility(View.GONE);
+        bor.setVisibility(View.GONE);
+        sad.setVisibility(View.GONE);
+        anxiety.setVisibility(View.GONE);
+        anger.setVisibility(View.GONE);
+        hopelessness.setVisibility(View.GONE);
+        boredom.setVisibility(View.GONE);
+        sadness.setVisibility(View.GONE);
+        anxiety_points.setVisibility(View.GONE);
+        anger_points.setVisibility(View.GONE);
+        hopelessness_points.setVisibility(View.GONE);
+        boredom_points.setVisibility(View.GONE);
+        sadness_points.setVisibility(View.GONE);
+        getContentButton.setVisibility(View.GONE);
+        provideContentButton.setVisibility(View.GONE);
+        myScrollView.setVisibility(View.VISIBLE);
+        myLinearLayout.setVisibility(View.VISIBLE);
+        heading.setVisibility(View.GONE);
+        params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 120);
+        String memelistarr="";
+        String gamelistarr="";
+        String movielistarr="";
+        for(int i=0;i<memelist.size();i++)
+            memelistarr=memelistarr+memelist.get(i)+" ";
+        memelistarr=memelistarr.trim();
+        for(int i=0;i<gamelist.size();i++)
+            gamelistarr=gamelistarr+gamelist.get(i)+"@";
+        gamelistarr=gamelistarr.substring(0,gamelistarr.length()-1);
+        for(int i=0;i<movielist.size();i++)
+            movielistarr=movielistarr+movielist.get(i)+"@";
+        movielistarr=movielistarr.substring(0,movielistarr.length()-1);
+        Python py=Python.getInstance();
+        PyObject pyobj=py.getModule("getContentList");
+        PyObject selectedMemes=pyobj.callAttr("get_memes",memelistarr);
+        PyObject selectedGames=pyobj.callAttr("get_games",gamelistarr);
+        PyObject selectedMovies=pyobj.callAttr("get_movies",movielistarr);
+        /*ImageView memeImages=new ImageView(getActivity());
+        Glide.with(getActivity()).load(sc.next()).into(memeImages);
+        sc.close();
+        myLinearLayout.addView(memeImages);*/
+        String longMemeString=selectedMemes.toString();
+        String myMemes[]=longMemeString.split(" ");
+        ImageView memeImages[]=new ImageView[myMemes.length];
+        TextView titleText=new TextView(getActivity());
+        titleText.setLayoutParams(params);
+        titleText.setText("Mood Based on your Content");
+        titleText.setTextSize(30);
+        myLinearLayout.addView(titleText);
+        TextView memeheading=new TextView(getActivity());
+        memeheading.setLayoutParams(params);
+        memeheading.setTextSize(23);
+        memeheading.setText("Memes:");
+        myLinearLayout.addView(memeheading);
+        for(int i=0;i<memeImages.length;i++)
+        {
+            memeImages[i]=new ImageView(getActivity());
+            Glide.with(getActivity()).load(myMemes[i]).into(memeImages[i]);
+            memeImages[i].setPadding(25,50,25,60);
+            myLinearLayout.addView(memeImages[i]);
+        }
+        TextView gameheading=new TextView(getActivity());
+        gameheading.setLayoutParams(params);
+        gameheading.setTextSize(23);
+        gameheading.setText("Games:");
+        myLinearLayout.addView(gameheading);
+        //games
+        String longGameString=selectedGames.toString();
+        myGames=longGameString.split("@");
+        Button gameTexts[]=new Button[myGames.length/2];
+        int j=0;
+        for(int i=0;i<gameTexts.length;i++,j+=2)
+        {
+            gameTexts[i]=new Button(getActivity());
+            gameTexts[i].setLayoutParams(params);
+            gameTexts[i].setText(myGames[j]);
+            gameTexts[i].setId(j+1);
+            gameTexts[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    gotoGameLink(view.getId());
+                }
+            });
+            myLinearLayout.addView(gameTexts[i]);
+        }
+
+        TextView movieheading=new TextView(getActivity());
+        movieheading.setLayoutParams(params);
+        movieheading.setTextSize(23);
+        movieheading.setText("Movies:");
+        myLinearLayout.addView(movieheading);
+        //movies
+        String longMovieString=selectedMovies.toString();
+        String myMovies[]=longMovieString.split("@");
+        TextView movieTexts[]=new TextView[myMovies.length/2];
+        j=0;
+        for(int i=0;i<movieTexts.length;i++,j+=2)
+        {
+            movieTexts[i]=new TextView(getActivity());
+            movieTexts[i].setLayoutParams(params);
+            movieTexts[i].setText(myMovies[j]+" ("+myMovies[j+1]+")");
+            myLinearLayout.addView(movieTexts[i]);
+        }
+    }
+    public void gotoGameLink(int id)
+    {
+        Uri uri=Uri.parse(myGames[id]);
+        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+        startActivity(intent);
     }
 }

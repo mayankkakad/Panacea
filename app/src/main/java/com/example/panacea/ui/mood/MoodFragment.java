@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -184,6 +185,12 @@ public class MoodFragment extends Fragment {
                 getContent(anxiety.getProgress(),anger.getProgress(),hopelessness.getProgress(),boredom.getProgress(),sadness.getProgress());
             }
         });
+        provideContentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gotoProvideContentForm();
+            }
+        });
         return root;
     }
     public void getContent(int anx_points,int ang_points,int hope_points,int bore_points,int sad_points) {
@@ -299,11 +306,17 @@ public class MoodFragment extends Fragment {
         titleText.setText("Mood Based on your Content");
         titleText.setTextSize(30);
         myLinearLayout.addView(titleText);
+        TextView temp1=new TextView(getActivity());
+        temp1.setLayoutParams(params);
+        myLinearLayout.addView(temp1);
         TextView memeheading=new TextView(getActivity());
         memeheading.setLayoutParams(params);
         memeheading.setTextSize(23);
         memeheading.setText("Memes:");
         myLinearLayout.addView(memeheading);
+        TextView temp2=new TextView(getActivity());
+        temp1.setLayoutParams(params);
+        myLinearLayout.addView(temp2);
         for(int i=0;i<memeImages.length;i++)
         {
             memeImages[i]=new ImageView(getActivity());
@@ -311,11 +324,17 @@ public class MoodFragment extends Fragment {
             memeImages[i].setPadding(25,50,25,60);
             myLinearLayout.addView(memeImages[i]);
         }
+        TextView temp3=new TextView(getActivity());
+        temp1.setLayoutParams(params);
+        myLinearLayout.addView(temp3);
         TextView gameheading=new TextView(getActivity());
         gameheading.setLayoutParams(params);
         gameheading.setTextSize(23);
         gameheading.setText("Games:");
         myLinearLayout.addView(gameheading);
+        TextView temp4=new TextView(getActivity());
+        temp1.setLayoutParams(params);
+        myLinearLayout.addView(temp4);
         //games
         String longGameString=selectedGames.toString();
         myGames=longGameString.split("@");
@@ -335,12 +354,17 @@ public class MoodFragment extends Fragment {
             });
             myLinearLayout.addView(gameTexts[i]);
         }
-
+        TextView temp5=new TextView(getActivity());
+        temp1.setLayoutParams(params);
+        myLinearLayout.addView(temp5);
         TextView movieheading=new TextView(getActivity());
         movieheading.setLayoutParams(params);
         movieheading.setTextSize(23);
         movieheading.setText("Movies:");
         myLinearLayout.addView(movieheading);
+        TextView temp6=new TextView(getActivity());
+        temp1.setLayoutParams(params);
+        myLinearLayout.addView(temp6);
         //movies
         String longMovieString=selectedMovies.toString();
         String myMovies[]=longMovieString.split("@");
@@ -353,10 +377,33 @@ public class MoodFragment extends Fragment {
             movieTexts[i].setText(myMovies[j]+" ("+myMovies[j+1]+")");
             myLinearLayout.addView(movieTexts[i]);
         }
+        Button feedbackButton=new Button(getActivity());
+        feedbackButton.setLayoutParams(params);
+        feedbackButton.setText("Provide Feedback");
+        feedbackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gotoGoogleForm();
+            }
+        });
+        feedbackButton.setGravity(Gravity.CENTER_HORIZONTAL);
+        myLinearLayout.addView(feedbackButton);
     }
     public void gotoGameLink(int id)
     {
         Uri uri=Uri.parse(myGames[id]);
+        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+        startActivity(intent);
+    }
+    public void gotoGoogleForm()
+    {
+        Uri uri=Uri.parse("https://docs.google.com/forms/d/e/1FAIpQLScAUZiXikW4TuVnUfnYFFNQIKnn--AnJ0RYhOD4dXXrSo9cKg/viewform?usp=sf_link");
+        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+        startActivity(intent);
+    }
+    public void gotoProvideContentForm()
+    {
+        Uri uri=Uri.parse("https://docs.google.com/forms/d/e/1FAIpQLSdsJjul382BQ4SndK9M6g3kGBxHw5cjc6QCo0pvBL1M8b1DBw/viewform?usp=sf_link");
         Intent intent=new Intent(Intent.ACTION_VIEW,uri);
         startActivity(intent);
     }

@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
 from apyori import apriori
+from urllib.request import Request, urlopen
 
 def preprocessing(dataframe):
     memes=[]
@@ -76,7 +77,11 @@ def predict_content(mood_points):
     memedict={'Doggo':[],'Bollywood':[],'Food':[],'Sports':[],'Travel':[],'Political':[],'Dark':[]}
     gamedict={'Action':[],'Multiplayer':[],'Arcade':[],'Sports':[],'Racing':[],'Puzzle':[],'Adventure':[]}
     moviedict={'Drama':[],'Comedy':[],'Horror':[],'Action':[],'Romance':[],'Science fiction':[],'Animation':[],'Thriller':[],'Crime':[],'Biography':[]}
-    dataframe=pd.read_csv('https://drive.google.com/u/1/uc?id=1GKP-Xpti_yZrLdD9l3o4K-R8qz3A4Gmw&export=download')
+    url='https://drive.google.com/uc?id=1GKP-Xpti_yZrLdD9l3o4K-R8qz3A4Gmw&export=download'
+    s=Request(url)
+    s.add_header('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36')
+    content=urlopen(s)
+    dataframe=pd.read_csv(content)
     dataframe,memes,games,movies=preprocessing(dataframe)
     newdf=new_dataset(dataframe,memes,games,movies)
     X=newdf[moods].values

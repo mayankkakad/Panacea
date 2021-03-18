@@ -13,6 +13,7 @@ android {
                 install "pandas"
                 install "sklearn"
                 install "apyori"
+                install "requests"
             }
         }
         sourceSets{

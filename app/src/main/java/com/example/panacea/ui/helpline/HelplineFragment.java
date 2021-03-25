@@ -21,11 +21,9 @@ public class HelplineFragment extends Fragment {
         helplineViewModel =
                 ViewModelProviders.of(this).get(HelplineViewModel.class);
         View root = inflater.inflate(R.layout.fragment_helpline, container, false);
-        final TextView textView = root.findViewById(R.id.text_helpline);
         helplineViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
             }
         });
         return root;

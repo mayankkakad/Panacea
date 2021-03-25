@@ -21,11 +21,9 @@ public class FaqFragment extends Fragment {
         faqViewModel =
                 ViewModelProviders.of(this).get(FaqViewModel.class);
         View root = inflater.inflate(R.layout.fragment_faq, container, false);
-        final TextView textView = root.findViewById(R.id.text_faq);
         faqViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                textView.setText(s);
             }
         });
         return root;

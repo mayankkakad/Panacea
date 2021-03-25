@@ -7,17 +7,304 @@
     android:layout_height="match_parent"
     tools:context=".ui.faq.FaqFragment" >
 
-    <TextView
-        android:id="@+id/text_faq"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/textView22"
+                android:textSize="30dp"
+                android:textAlignment="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="FAQs" />
+
+            <TextView
+                android:id="@+id/textView23"
+                android:textSize="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="" />
+
+            <EditText
+                android:id="@+id/editTextTextMultiLine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:textSize="23dp"
+                android:text="Is depression real?"
+                android:gravity="start|top"
+                android:inputType="textMultiLine" />
+
+            <EditText
+                android:id="@+id/editTextTextMultiLine3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:textSize="18dp"
+                android:text="Yes, it is very real and a serious issue"
+                android:gravity="start|top"
+                android:inputType="textMultiLine" />
+
+            <TextView
+                android:id="@+id/textView25"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="30dp" />
+
+            <EditText
+                android:id="@+id/editTextTextMultiLine4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                android:text="Is depression an illness?"
+                android:textSize="23dp" />
+
+            <EditText
+                android:id="@+id/editTextTextMultiLine5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                android:text="Yes, it falls under the category of “mentally ill”"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/textView26"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="30dp" />
+
+            <EditText
+                android:id="@+id/editTextTextMultiLine7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                android:text="Is depression curable?"
+                android:textSize="23dp" />
+
+            <EditText
+                android:id="@+id/editTextTextMultiLine8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                android:text="Yes, it is"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/textView27"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="30dp" />
+
+            <EditText
+                android:id="@+id/editTextTextMultiLine9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                android:text="Can depression be cured without the help of doctors?"
+                android:textSize="23dp" />
+
+            <EditText
+                android:id="@+id/editTextTextMultiLine10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                android:text="It is preferred to consult a psychiatrist, however, it can be cured otherwise too"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/textView28"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="30dp" />
+
+            <EditText
+                android:id="@+id/editTextTextMultiLine11"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                android:text="Is Yoga helpful?"
+                android:textSize="23dp" />
+
+            <EditText
+                android:id="@+id/editTextTextMultiLine12"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                android:text="Yes. Yoga and other medications do help to divert thoughts"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/textView29"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="30dp" />
+
+            <EditText
+                android:id="@+id/editTextTextMultiLine13"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                android:text="Does medication cause side effects?"
+                android:textSize="23dp" />
+
+            <EditText
+                android:id="@+id/editTextTextMultiLine14"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                android:text="Depending on the amount of required dosage. There are a few medicines which don’t cause side effects, but in most cases, there might be minimal side effects"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/textView30"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="30dp" />
+
+            <EditText
+                android:id="@+id/editTextTextMultiLine15"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                android:text="How do I differentiate whether I am sad or depressed?"
+                android:textSize="23dp" />
+
+            <EditText
+                android:id="@+id/editTextTextMultiLine16"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                android:text="Depression is a mental state, while sadness is an emotion. Sadness has an antonym, happiness. Depression doesn’t have an antonym. Prolonged sadness can be a symptom of depression"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/textView31"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="30dp" />
+
+            <EditText
+                android:id="@+id/editTextTextMultiLine17"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                android:text="Can kids/senior citizens/physically disabled/LGBTQ community have depression?"
+                android:textSize="23dp" />
+
+            <EditText
+                android:id="@+id/editTextTextMultiLine18"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                android:text="Yes. All of them can suffer through depression. Kids hardly have a chance though, generally kids below 12 might not go through it"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/textView32"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="30dp" />
+
+            <EditText
+                android:id="@+id/editTextTextMultiLine19"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                android:text="Is depression contagious?"
+                android:textSize="23dp" />
+
+            <EditText
+                android:id="@+id/editTextTextMultiLine20"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                android:text="No, not all. However, discussing depressing topics with a patient might make you a little depressed"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/textView33"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="30dp" />
+
+            <EditText
+                android:id="@+id/editTextTextMultiLine21"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                android:text="Is depression hereditary?"
+                android:textSize="23dp" />
+
+            <EditText
+                android:id="@+id/editTextTextMultiLine22"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                android:text="No"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/textView34"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="30dp" />
+
+        </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

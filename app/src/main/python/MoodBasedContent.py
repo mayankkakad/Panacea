@@ -10,19 +10,19 @@ def preprocessing(dataframe):
     movies=[]
     for i in range(len(dataframe)):
         temp=[]
-        temp=dataframe.values[i,7].split(",")
+        temp=dataframe.values[i,7].split(";")
         for j in range(len(temp)):
             temp[j]=temp[j].strip()
         memes.append(temp)
     for i in range(len(dataframe)):
         temp=[]
-        temp=dataframe.values[i,8].split(",")
+        temp=dataframe.values[i,8].split(";")
         for j in range(len(temp)):
             temp[j]=temp[j].strip()
         games.append(temp)
     for i in range(len(dataframe)):
         temp=[]
-        temp=dataframe.values[i,9].split(",")
+        temp=dataframe.values[i,9].split(";")
         for j in range(len(temp)):
             temp[j]=temp[j].strip()
         movies.append(temp)
@@ -73,11 +73,11 @@ def runApriori(memedict,gamedict,moviedict,memes,games,movies):
     return memedict,gamedict,moviedict
 
 def predict_content(mood_points):
-    moods=['Anxiety','Anger','Hopelessness','Perpetual/Long-term Boredom / Tiredness','Unreasonable/Unexplained Sadness']
+    moods=['1. Anxiety','2. Anger','3. Hopelessness','4. Perpetual/Long-term Boredom / Tiredness','5. Unreasonable/Unexplained Sadness']
     memedict={'Doggo':[],'Bollywood':[],'Food':[],'Sports':[],'Travel':[],'Political':[],'Dark':[]}
     gamedict={'Action':[],'Multiplayer':[],'Arcade':[],'Sports':[],'Racing':[],'Puzzle':[],'Adventure':[]}
     moviedict={'Drama':[],'Comedy':[],'Horror':[],'Action':[],'Romance':[],'Science fiction':[],'Animation':[],'Thriller':[],'Crime':[],'Biography':[]}
-    url='https://drive.google.com/uc?id=1GKP-Xpti_yZrLdD9l3o4K-R8qz3A4Gmw&export=download'
+    url='https://drive.google.com/uc?id=14biLntLuUyLf0FIf-kxalqLH18ucaZVR&export=download'
     s=Request(url)
     s.add_header('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36')
     content=urlopen(s)

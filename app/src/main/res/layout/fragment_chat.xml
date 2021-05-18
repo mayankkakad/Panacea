@@ -35,14 +35,15 @@
 
     <ScrollView
         android:id="@+id/scrollView2"
-        android:layout_width="412dp"
-        android:layout_height="532dp"
+        android:layout_width="380dp"
+        android:layout_height="531dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
+            android:id="@+id/myChatBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" />

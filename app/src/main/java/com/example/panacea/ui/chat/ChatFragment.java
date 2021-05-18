@@ -3,12 +3,16 @@ package com.example.panacea.ui.chat;
 import android.net.InetAddresses;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.format.Formatter;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,28 +55,37 @@ import static android.content.Context.WIFI_SERVICE;
 public class ChatFragment extends Fragment {
 
     private ChatViewModel chatViewModel;
-    Button goChat,sendMessage;
-    EditText nameText;
+    static Button goChat;
+    static Button sendMessage;
+    static EditText nameText;
     static EditText message;
-    TextView oppName;
-    FirebaseFirestore db;
+    static TextView oppName;
+    static FirebaseFirestore db;
     static Vector<String> chatusers;
     static Vector<Pair> pairs;
     static String anonymous,aname;
     static int count=0;
     boolean written=false,read=false;
-    boolean chatting=false;
+    static boolean chatting=false;
     static String serverIp;
     static int serverPort;
     static String ip;
     static int port;
     static FragmentActivity fa;
+    static String role;
+    static LinearLayout myChatBox;
+    static ViewGroup.LayoutParams params;
+    static TextView messages[];
+    static int messagecount=0;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
         chatViewModel =
                 ViewModelProviders.of(this).get(ChatViewModel.class);
         View root = inflater.inflate(R.layout.fragment_chat, container, false);
+        myChatBox=(LinearLayout)root.findViewById(R.id.myChatBox);
+        params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 120);
+        messages=new TextView[1000];
         db=FirebaseFirestore.getInstance();
         chatusers=new Vector<String>();
         pairs=new Vector<Pair>();
@@ -93,6 +106,8 @@ public class ChatFragment extends Fragment {
                         Toast.makeText(getActivity(), "Name can't be empty", Toast.LENGTH_SHORT).show();
                     else {
                         oppName.setText("Pairing...");
+                        for(int i=0;i<1000;i++)
+                            messages[i]=new TextView(getActivity());
                         oppName.setVisibility(View.VISIBLE);
                         nameText.setVisibility(View.GONE);
                         searchPeople();
@@ -106,6 +121,16 @@ public class ChatFragment extends Fragment {
                     db.collection("chat").document(MainActivity.loggedemail).delete();
                     message.setVisibility(View.GONE);
                     sendMessage.setVisibility(View.GONE);
+                    if(role!=null&&role.equals("server"))
+                    {
+                        Thread y=new Thread(new EndServer());
+                        y.start();
+                    }
+                    else if(role!=null &&role.equals("client"))
+                    {
+                        Thread y=new Thread(new EndClient());
+                        y.start();
+                    }
                 }
             }
         });
@@ -305,54 +330,195 @@ public class ChatFragment extends Fragment {
                     if(doc.get("role").toString().equals("server"))
                     {
                         Thread server=new Thread(new Server());
+                        role="server";
                         server.start();
                     }
                     else
                     {
                         Thread client=new Thread(new Client());
+                        role="client";
                         client.start();
                     }
                 }
             }
         });
     }
+
+    public static void receive(String inp)
+    {
+        final String i=inp;
+        Handler mainHandler=new Handler(Looper.getMainLooper());
+        Runnable myRunnable=new Runnable() {
+            @Override
+            public void run() {
+                messages[messagecount].setLayoutParams(params);
+                messages[messagecount].setTextSize(18);
+                messages[messagecount].setText(aname+": "+i);
+                messages[messagecount].setGravity(Gravity.LEFT);
+                myChatBox.addView(messages[messagecount]);
+                messagecount++;
+                if(messagecount==1000)
+                    messagecount=0;
+            }
+        };
+        mainHandler.post(myRunnable);
+    }
+
+    public static void send(String senddata)
+    {
+        final String i=senddata;
+        Handler mainHandler=new Handler(Looper.getMainLooper());
+        Runnable myRunnable=new Runnable(){
+            @Override
+            public void run() {
+                messages[messagecount].setLayoutParams(params);
+                messages[messagecount].setTextSize(18);
+                messages[messagecount].setText("Me: "+i);
+                messages[messagecount].setGravity(Gravity.RIGHT);
+                myChatBox.addView(messages[messagecount]);
+                messagecount++;
+                if(messagecount==1000)
+                    messagecount=0;
+            }
+        };
+        mainHandler.post(myRunnable);
+    }
 }
 
 class Server implements Runnable
 {
-    ServerSocket serverSocket;
-    Socket socket;
-    PrintWriter output;
-    BufferedReader input;
+    static ServerSocket serverSocket;
+    static Socket socket;
+    static PrintWriter output;
+    static BufferedReader input;
+    static String senddata;
     @Override
     public void run()
     {
         try {
             serverSocket = new ServerSocket(ChatFragment.port);
             socket=serverSocket.accept();
-            output=new PrintWriter(socket.getOutputStream());
+            output=new PrintWriter(socket.getOutputStream(),true);
             input=new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            Toast.makeText(ChatFragment.fa,"Connection Established",Toast.LENGTH_SHORT);
+            ChatFragment.message.setText("Server Connected");
+            ChatFragment.sendMessage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    senddata=ChatFragment.message.getText().toString().trim();
+                    ChatFragment.message.setText("");
+                    Thread x=new Thread(new ServerSend());
+                    x.start();
+                }
+            });
+            while(true) {
+                String inp = input.readLine();
+                if(inp.equals("this chat  ends")) {
+                    ChatFragment.message.setVisibility(View.GONE);;
+                    ChatFragment.sendMessage.setVisibility(View.GONE);
+                    ChatFragment.oppName.setVisibility(View.GONE);
+                    ChatFragment.nameText.setVisibility(View.VISIBLE);
+                    ChatFragment.goChat.setText("Chat");
+                    ChatFragment.db.collection("chat").document(MainActivity.loggedemail).delete();
+                    ChatFragment.chatting=false;
+                    socket.close();
+                    serverSocket.close();
+                    break;
+                }
+                else {
+                    ChatFragment.receive(inp);
+                }
+            }
         }
-        catch(Exception e){Toast.makeText(ChatFragment.fa,"Connection Failed",Toast.LENGTH_SHORT);}
+        catch(Exception e){ChatFragment.message.setText(e.toString());}
+    }
+}
+
+class ServerSend implements Runnable
+{
+    @Override
+    public void run()
+    {
+        if(!Server.senddata.equals("")) {
+            ChatFragment.send(Server.senddata);
+            Server.output.println(Server.senddata);
+        }
     }
 }
 
 class Client implements Runnable
 {
-    Socket socket;
-    PrintWriter output;
-    BufferedReader input;
+    static Socket socket;
+    static PrintWriter output;
+    static BufferedReader input;
+    static String senddata=null;
     @Override
     public void run()
     {
         try {
             socket=new Socket(ChatFragment.serverIp,ChatFragment.serverPort);
-            output=new PrintWriter(socket.getOutputStream());
+            output=new PrintWriter(socket.getOutputStream(),true);
             input=new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            Toast.makeText(ChatFragment.fa,"Connection Established",Toast.LENGTH_SHORT);
+            ChatFragment.message.setText("Client connected");
+            ChatFragment.sendMessage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    senddata=ChatFragment.message.getText().toString().trim();
+                    ChatFragment.message.setText("");
+                    Thread x=new Thread(new ClientSend());
+                    x.start();
+                }
+            });
+            while(true) {
+                String inp = input.readLine();
+                if(inp.equals("this chat  ends")) {
+                    ChatFragment.message.setVisibility(View.GONE);;
+                    ChatFragment.sendMessage.setVisibility(View.GONE);
+                    ChatFragment.oppName.setVisibility(View.GONE);
+                    ChatFragment.nameText.setVisibility(View.VISIBLE);
+                    ChatFragment.goChat.setText("Chat");
+                    ChatFragment.db.collection("chat").document(MainActivity.loggedemail).delete();
+                    ChatFragment.chatting=false;
+                    socket.close();
+                    break;
+                }
+                else {
+                    ChatFragment.receive(inp);
+                }
+            }
         }
-        catch(Exception e){Toast.makeText(ChatFragment.fa,"Connection Failed",Toast.LENGTH_SHORT);}
+        catch(Exception e){ChatFragment.message.setText(e.toString());}
+    }
+}
+
+class ClientSend implements Runnable
+{
+    @Override
+    public void run()
+    {
+        if(!Client.senddata.equals("")) {
+            ChatFragment.send(Client.senddata);
+            Client.output.println(Client.senddata);
+        }
+    }
+}
+
+class EndServer implements Runnable
+{
+    @Override
+    public void run()
+    {
+        Server.output.println("this chat ends");
+        try{Server.socket.close();Server.serverSocket.close();}catch(Exception e){}
+    }
+}
+
+class EndClient implements Runnable
+{
+    @Override
+    public void run()
+    {
+        Client.output.println("this chat ends");
+        try{Client.socket.close();}catch(Exception e){}
     }
 }
 

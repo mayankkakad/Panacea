@@ -7,7 +7,7 @@ movienames=[]
 def get_memes(memeliststr):
     retmemes=' '
     memelist=memeliststr.split(' ')
-    dataframe=pd.read_csv("https://drive.google.com/u/0/uc?id=1e020BmxQkRAGBP3vuTjfqy2jlINFhFB8&export=download")
+    dataframe=pd.read_csv("https://raw.githubusercontent.com/mayankkakad/datasets/main/memesdataset.csv")
     for meme_category in memelist:
         newdf=dataframe[dataframe['category']==meme_category]
         mymemes.extend(list(newdf['link']))
@@ -18,7 +18,7 @@ def get_memes(memeliststr):
 def get_games(gameliststr):
     retgames=' '
     gamelist=gameliststr.split('@')
-    dataframe=pd.read_csv("https://drive.google.com/u/0/uc?id=1mBpmdQBklySD-KglB6PZ2jk85GJOBKij&export=download")
+    dataframe=pd.read_csv("https://raw.githubusercontent.com/mayankkakad/datasets/main/gamesdataset.csv")
     for game_category in gamelist:
         newdf=dataframe[dataframe['category']==game_category]
         gamenames.extend(list(newdf['name']))
@@ -30,7 +30,7 @@ def get_games(gameliststr):
 def get_movies(movieliststr):
     retmovies=' '
     movielist=movieliststr.split('@')
-    dataframe=pd.read_csv("https://drive.google.com/u/0/uc?id=1PiMQW9A_TuYmV20hIf3UhWgPuB4W0zro&export=download")
+    dataframe=pd.read_csv("https://raw.githubusercontent.com/mayankkakad/datasets/main/moviesdataset.csv")
     for movie_category in movielist:
         newdf=dataframe[dataframe['genre1']==movie_category]
         movienames.extend(list(newdf['movie']))

@@ -77,11 +77,7 @@ def predict_content(mood_points):
     memedict={'Doggo':[],'Bollywood':[],'Food':[],'Sports':[],'Travel':[],'Political':[],'Dark':[]}
     gamedict={'Action':[],'Multiplayer':[],'Arcade':[],'Sports':[],'Racing':[],'Puzzle':[],'Adventure':[]}
     moviedict={'Drama':[],'Comedy':[],'Horror':[],'Action':[],'Romance':[],'Science fiction':[],'Animation':[],'Thriller':[],'Crime':[],'Biography':[]}
-    url='https://drive.google.com/uc?id=14biLntLuUyLf0FIf-kxalqLH18ucaZVR&export=download'
-    s=Request(url)
-    s.add_header('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36')
-    content=urlopen(s)
-    dataframe=pd.read_csv(content)
+    dataframe=pd.read_csv('https://raw.githubusercontent.com/mayankkakad/datasets/main/mbcdataset.csv')
     dataframe,memes,games,movies=preprocessing(dataframe)
     newdf=new_dataset(dataframe,memes,games,movies)
     X=newdf[moods].values

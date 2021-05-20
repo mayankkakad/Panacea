@@ -328,11 +328,11 @@ public class ChatFragment extends Fragment {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()) {
                     DocumentSnapshot doc=task.getResult();
-                    if(doc.get("public ip").toString().equals(systemipaddress)||(!doc.get("private ip").equals("0.0.0.0")))
+                    serverPort=Integer.parseInt(doc.get("port").toString());
+                    if(doc.get("public ipv4").toString().equals(systemipaddress))
                         serverIp=doc.get("private ip").toString();
                     else
                         serverIp=doc.get("public ip").toString();
-                    serverPort=Integer.parseInt(doc.get("port").toString());
                     setupConnection();
                 }
             }
@@ -605,7 +605,7 @@ class GetIP implements Runnable
             while(ChatFragment.systemipaddress==null||ChatFragment.systemipaddress.length()<=15) {
                 URL url_name = new URL("https://bot.whatismyipaddress.com");
                 BufferedReader sc = new BufferedReader(new InputStreamReader(url_name.openStream()));
-                ChatFragment.systemipaddress = sc.readLine().trim();
+                ChatFragment.systemipaddress=sc.readLine().trim();
             }
         }
         catch(Exception e){}

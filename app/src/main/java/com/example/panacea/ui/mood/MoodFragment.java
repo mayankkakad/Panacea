@@ -9,12 +9,15 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +54,9 @@ public class MoodFragment extends Fragment {
     static ScrollView myScrollView;
     static View root;
     String myGames[];
+    Spinner type;
+    static int curr_sel=0;
+    static Vector<String> memelist,gamelist,movielist;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
@@ -214,7 +220,6 @@ public class MoodFragment extends Fragment {
         String memearr[]=memes.split(",");
         String gamearr[]=games.split(",");
         String moviearr[]=movies.split(",");
-        Vector<String> memelist,gamelist,movielist;
         memelist=new Vector<String>();
         gamelist=new Vector<String>();
         movielist=new Vector<String>();
@@ -252,9 +257,9 @@ public class MoodFragment extends Fragment {
         anxiety_points.setText(t1);
         anger_points.setText(t2);
         hopelessness_points.setText(t3);*/
-        showContent(memelist,gamelist,movielist);
+        showContent();
     }
-    public void showContent(Vector<String> memelist,Vector<String> gamelist,Vector<String> movielist) {
+    public void showContent() {
         heading.setText("Content based on you Mood");
         anx.setVisibility(View.GONE);
         ang.setVisibility(View.GONE);
@@ -306,76 +311,104 @@ public class MoodFragment extends Fragment {
         titleText.setText("Mood Based on your Content");
         titleText.setTextSize(30);
         myLinearLayout.addView(titleText);
-        TextView temp1=new TextView(getActivity());
-        temp1.setLayoutParams(params);
-        myLinearLayout.addView(temp1);
-        TextView memeheading=new TextView(getActivity());
-        memeheading.setLayoutParams(params);
-        memeheading.setTextSize(23);
-        memeheading.setText("Memes:");
-        myLinearLayout.addView(memeheading);
-        TextView temp2=new TextView(getActivity());
-        temp1.setLayoutParams(params);
-        myLinearLayout.addView(temp2);
-        for(int i=0;i<memeImages.length;i++)
-        {
-            memeImages[i]=new ImageView(getActivity());
-            Glide.with(getActivity()).load(myMemes[i]).into(memeImages[i]);
-            memeImages[i].setPadding(25,50,25,60);
-            myLinearLayout.addView(memeImages[i]);
+        type=new Spinner(getActivity());
+        type.setLayoutParams(params);
+        String myarray[]={"All","Memes","Games","Movies"};
+        ArrayAdapter<String> adapter=new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item,myarray);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        type.setAdapter(adapter);
+        type.setSelection(curr_sel);
+        type.setGravity(Gravity.CENTER);
+        type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(i==curr_sel)
+                    return;
+                curr_sel=i;
+                myLinearLayout.removeAllViews();
+                showContent();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        myLinearLayout.addView(type);
+        if(curr_sel<2) {
+            TextView temp1 = new TextView(getActivity());
+            temp1.setLayoutParams(params);
+            myLinearLayout.addView(temp1);
+            TextView memeheading = new TextView(getActivity());
+            memeheading.setLayoutParams(params);
+            memeheading.setTextSize(23);
+            memeheading.setText("Memes:");
+            myLinearLayout.addView(memeheading);
+            TextView temp2 = new TextView(getActivity());
+            temp2.setLayoutParams(params);
+            myLinearLayout.addView(temp2);
+            for (int i = 0; i < memeImages.length; i++) {
+                memeImages[i] = new ImageView(getActivity());
+                Glide.with(getActivity()).load(myMemes[i]).into(memeImages[i]);
+                memeImages[i].setPadding(25, 50, 25, 60);
+                myLinearLayout.addView(memeImages[i]);
+            }
         }
-        TextView temp3=new TextView(getActivity());
-        temp1.setLayoutParams(params);
-        myLinearLayout.addView(temp3);
-        TextView gameheading=new TextView(getActivity());
-        gameheading.setLayoutParams(params);
-        gameheading.setTextSize(23);
-        gameheading.setText("Games:");
-        myLinearLayout.addView(gameheading);
-        TextView temp4=new TextView(getActivity());
-        temp1.setLayoutParams(params);
-        myLinearLayout.addView(temp4);
-        //games
-        String longGameString=selectedGames.toString();
-        myGames=longGameString.split("@");
-        Button gameTexts[]=new Button[myGames.length/2];
-        int j=0;
-        for(int i=0;i<gameTexts.length;i++,j+=2)
-        {
-            gameTexts[i]=new Button(getActivity());
-            gameTexts[i].setLayoutParams(params);
-            gameTexts[i].setText(myGames[j]);
-            gameTexts[i].setId(j+1);
-            gameTexts[i].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    gotoGameLink(view.getId());
-                }
-            });
-            myLinearLayout.addView(gameTexts[i]);
+        int j;
+        if(curr_sel==0||curr_sel==2) {
+            TextView temp3 = new TextView(getActivity());
+            temp3.setLayoutParams(params);
+            myLinearLayout.addView(temp3);
+            TextView gameheading = new TextView(getActivity());
+            gameheading.setLayoutParams(params);
+            gameheading.setTextSize(23);
+            gameheading.setText("Games:");
+            myLinearLayout.addView(gameheading);
+            TextView temp4 = new TextView(getActivity());
+            temp4.setLayoutParams(params);
+            myLinearLayout.addView(temp4);
+            //games
+            String longGameString = selectedGames.toString();
+            myGames = longGameString.split("@");
+            Button gameTexts[] = new Button[myGames.length / 2];
+            j = 0;
+            for (int i = 0; i < gameTexts.length; i++, j += 2) {
+                gameTexts[i] = new Button(getActivity());
+                gameTexts[i].setLayoutParams(params);
+                gameTexts[i].setText(myGames[j]);
+                gameTexts[i].setId(j + 1);
+                gameTexts[i].setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        gotoGameLink(view.getId());
+                    }
+                });
+                myLinearLayout.addView(gameTexts[i]);
+            }
         }
-        TextView temp5=new TextView(getActivity());
-        temp1.setLayoutParams(params);
-        myLinearLayout.addView(temp5);
-        TextView movieheading=new TextView(getActivity());
-        movieheading.setLayoutParams(params);
-        movieheading.setTextSize(23);
-        movieheading.setText("Movies:");
-        myLinearLayout.addView(movieheading);
-        TextView temp6=new TextView(getActivity());
-        temp1.setLayoutParams(params);
-        myLinearLayout.addView(temp6);
-        //movies
-        String longMovieString=selectedMovies.toString();
-        String myMovies[]=longMovieString.split("@");
-        TextView movieTexts[]=new TextView[myMovies.length/2];
-        j=0;
-        for(int i=0;i<movieTexts.length;i++,j+=2)
-        {
-            movieTexts[i]=new TextView(getActivity());
-            movieTexts[i].setLayoutParams(params);
-            movieTexts[i].setText(myMovies[j]+" ("+myMovies[j+1]+")");
-            myLinearLayout.addView(movieTexts[i]);
+        if(curr_sel==0||curr_sel==3) {
+            TextView temp5 = new TextView(getActivity());
+            temp5.setLayoutParams(params);
+            myLinearLayout.addView(temp5);
+            TextView movieheading = new TextView(getActivity());
+            movieheading.setLayoutParams(params);
+            movieheading.setTextSize(23);
+            movieheading.setText("Movies:");
+            myLinearLayout.addView(movieheading);
+            TextView temp6 = new TextView(getActivity());
+            temp6.setLayoutParams(params);
+            myLinearLayout.addView(temp6);
+            //movies
+            String longMovieString = selectedMovies.toString();
+            String myMovies[] = longMovieString.split("@");
+            TextView movieTexts[] = new TextView[myMovies.length / 2];
+            j = 0;
+            for (int i = 0; i < movieTexts.length; i++, j += 2) {
+                movieTexts[i] = new TextView(getActivity());
+                movieTexts[i].setLayoutParams(params);
+                movieTexts[i].setText(myMovies[j] + " (" + myMovies[j + 1] + ")");
+                myLinearLayout.addView(movieTexts[i]);
+            }
         }
         Button feedbackButton=new Button(getActivity());
         feedbackButton.setLayoutParams(params);

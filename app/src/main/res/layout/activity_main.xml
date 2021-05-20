@@ -55,10 +55,9 @@
         android:layout_height="62dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.326"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button"
-        app:layout_constraintVertical_bias="0.086"
+        app:layout_constraintVertical_bias="0.1"
         app:srcCompat="@drawable/common_google_signin_btn_icon_dark" />
 
     <Button
@@ -73,18 +72,5 @@
         app:layout_constraintStart_toEndOf="@+id/button"
         app:layout_constraintTop_toBottomOf="@+id/password"
         app:layout_constraintVertical_bias="0.696" />
-
-    <ImageButton
-        android:id="@+id/imageButton5"
-        android:layout_width="59dp"
-        android:layout_height="62dp"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.348"
-        app:layout_constraintStart_toEndOf="@+id/imageButton"
-        app:layout_constraintTop_toBottomOf="@+id/button2"
-        app:layout_constraintVertical_bias="0.086"
-        app:srcCompat="@drawable/fsign" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

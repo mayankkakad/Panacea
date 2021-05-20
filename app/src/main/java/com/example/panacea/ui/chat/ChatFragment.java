@@ -45,6 +45,7 @@ import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -70,6 +71,7 @@ public class ChatFragment extends Fragment {
     static String serverIp;
     static int serverPort;
     static String ip;
+    static String systemipaddress;
     static int port;
     static FragmentActivity fa;
     static String role;
@@ -83,6 +85,12 @@ public class ChatFragment extends Fragment {
         chatViewModel =
                 ViewModelProviders.of(this).get(ChatViewModel.class);
         View root = inflater.inflate(R.layout.fragment_chat, container, false);
+        try {
+            Thread getIp=new Thread(new GetIP());
+            getIp.start();
+        }catch(Exception e){message.setText(e.toString());}
+        if(systemipaddress==null)
+            systemipaddress="";
         myChatBox=(LinearLayout)root.findViewById(R.id.myChatBox);
         params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 120);
         messages=new TextView[1000];
@@ -118,6 +126,7 @@ public class ChatFragment extends Fragment {
                     nameText.setVisibility(View.VISIBLE);
                     goChat.setText("Chat");
                     chatting=false;
+                    messagecount=0;
                     db.collection("chat").document(MainActivity.loggedemail).delete();
                     message.setVisibility(View.GONE);
                     sendMessage.setVisibility(View.GONE);
@@ -131,6 +140,7 @@ public class ChatFragment extends Fragment {
                         Thread y=new Thread(new EndClient());
                         y.start();
                     }
+                    myChatBox.removeAllViews();
                 }
             }
         });
@@ -151,7 +161,8 @@ public class ChatFragment extends Fragment {
                     data.put("email",MainActivity.loggedemail);
                     data.put("name",nameText.getText().toString());
                     ip=Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-                    try { data.put("ip",ip);}catch(Exception e){}
+                    data.put("private ip",ip);
+                    data.put("public ip",systemipaddress);
                     data.put("port",port);
                     DocumentSnapshot doc=task.getResult();
                     if(!doc.exists())
@@ -234,8 +245,10 @@ public class ChatFragment extends Fragment {
             status[i]=status[t]=true;
             pairs.add(new Pair(chatusers.get(i),chatusers.get(t)));
         }
-        if(pairs.size()==0)
+        if(pairs.size()==0) {
+            try{Thread.sleep(10000);}catch(Exception e){}
             setPage();
+        }
         count=0;
         for(int i=0;i<pairs.size();i++)
         {
@@ -255,8 +268,11 @@ public class ChatFragment extends Fragment {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()) {
-                        if(count==pairs.size())
+                        if(count==pairs.size()) {
+                            if(anonymous==null)
+                                try{Thread.sleep(10000);}catch(Exception e){}
                             setPage();
+                        }
                     }
                 }
             });
@@ -278,6 +294,7 @@ public class ChatFragment extends Fragment {
                     {
                         oppName.setVisibility(View.GONE);
                         nameText.setVisibility(View.VISIBLE);
+                        db.collection("chat").document(MainActivity.loggedemail).delete();
                         Toast.makeText(getActivity(),"No Users Available",Toast.LENGTH_SHORT).show();
                     }
                     else
@@ -311,7 +328,10 @@ public class ChatFragment extends Fragment {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()) {
                     DocumentSnapshot doc=task.getResult();
-                    serverIp=doc.get("ip").toString();
+                    if(doc.get("public ip").toString().equals(systemipaddress)||(!doc.get("private ip").equals("0.0.0.0")))
+                        serverIp=doc.get("private ip").toString();
+                    else
+                        serverIp=doc.get("public ip").toString();
                     serverPort=Integer.parseInt(doc.get("port").toString());
                     setupConnection();
                 }
@@ -396,11 +416,22 @@ class Server implements Runnable
     public void run()
     {
         try {
+            ChatFragment.message.setText("Connecting...");
             serverSocket = new ServerSocket(ChatFragment.port);
+            socket=serverSocket.accept();
+            socket.close();
             socket=serverSocket.accept();
             output=new PrintWriter(socket.getOutputStream(),true);
             input=new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            ChatFragment.message.setText("Server Connected");
+            ChatFragment.message.setText("");
+            Handler myHandler=new Handler(Looper.getMainLooper());
+            Runnable myRunnable=new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(ChatFragment.fa,"Connection Established",Toast.LENGTH_SHORT).show();
+                }
+            };
+            myHandler.post(myRunnable);
             ChatFragment.sendMessage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -412,16 +443,9 @@ class Server implements Runnable
             });
             while(true) {
                 String inp = input.readLine();
-                if(inp.equals("this chat  ends")) {
-                    ChatFragment.message.setVisibility(View.GONE);;
-                    ChatFragment.sendMessage.setVisibility(View.GONE);
-                    ChatFragment.oppName.setVisibility(View.GONE);
-                    ChatFragment.nameText.setVisibility(View.VISIBLE);
-                    ChatFragment.goChat.setText("Chat");
-                    ChatFragment.db.collection("chat").document(MainActivity.loggedemail).delete();
-                    ChatFragment.chatting=false;
-                    socket.close();
-                    serverSocket.close();
+                if(inp.equals("this chat ends")) {
+                    output.close();
+                    int a=2/0;
                     break;
                 }
                 else {
@@ -429,7 +453,16 @@ class Server implements Runnable
                 }
             }
         }
-        catch(Exception e){ChatFragment.message.setText(e.toString());}
+        catch(Exception e){
+            Handler xHandler=new Handler(Looper.getMainLooper());
+            Runnable xRunnable=new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(ChatFragment.fa,"Connection Failed/Terminated",Toast.LENGTH_SHORT).show();
+                    ChatFragment.goChat.performClick();
+                }
+            };
+            xHandler.post(xRunnable); }
     }
 }
 
@@ -455,10 +488,25 @@ class Client implements Runnable
     public void run()
     {
         try {
+            int tempc=0;
+            ChatFragment.message.setText("Connecting...");
+            while(!checkIsAlive(ChatFragment.serverIp,ChatFragment.serverPort)&&tempc<11)
+            {
+                try{Thread.sleep(1000);}catch(Exception e){}
+                tempc++;
+            }
             socket=new Socket(ChatFragment.serverIp,ChatFragment.serverPort);
             output=new PrintWriter(socket.getOutputStream(),true);
             input=new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            ChatFragment.message.setText("Client connected");
+            ChatFragment.message.setText("");
+            Handler myHandler=new Handler(Looper.getMainLooper());
+            Runnable myRunnable=new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(ChatFragment.fa,"Connection Established",Toast.LENGTH_SHORT).show();
+                }
+            };
+            myHandler.post(myRunnable);
             ChatFragment.sendMessage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -470,15 +518,9 @@ class Client implements Runnable
             });
             while(true) {
                 String inp = input.readLine();
-                if(inp.equals("this chat  ends")) {
-                    ChatFragment.message.setVisibility(View.GONE);;
-                    ChatFragment.sendMessage.setVisibility(View.GONE);
-                    ChatFragment.oppName.setVisibility(View.GONE);
-                    ChatFragment.nameText.setVisibility(View.VISIBLE);
-                    ChatFragment.goChat.setText("Chat");
-                    ChatFragment.db.collection("chat").document(MainActivity.loggedemail).delete();
-                    ChatFragment.chatting=false;
-                    socket.close();
+                if(inp.equals("this chat ends")) {
+                    output.close();
+                    int a=2/0;
                     break;
                 }
                 else {
@@ -486,7 +528,29 @@ class Client implements Runnable
                 }
             }
         }
-        catch(Exception e){ChatFragment.message.setText(e.toString());}
+        catch(Exception e){
+            Handler xHandler=new Handler(Looper.getMainLooper());
+            Runnable xRunnable=new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(ChatFragment.fa,"Connection Failed/Terminated",Toast.LENGTH_SHORT).show();
+                    ChatFragment.goChat.performClick();
+                }
+            };
+            xHandler.post(xRunnable); }
+    }
+    public boolean checkIsAlive(String sip,int sport)
+    {
+        boolean res=false;
+        try {
+            Socket s = new Socket(sip, sport);
+            s.getOutputStream();
+            s.getInputStream();
+            s.close();
+            res=true;
+        }
+        catch(Exception e){}
+        return res;
     }
 }
 
@@ -507,8 +571,8 @@ class EndServer implements Runnable
     @Override
     public void run()
     {
-        Server.output.println("this chat ends");
-        try{Server.socket.close();Server.serverSocket.close();}catch(Exception e){}
+        try{Server.output.println("this chat ends");}catch(Exception e){}
+        try{Server.socket.close();Server.serverSocket.close();Server.serverSocket=null;Server.socket=null;}catch(Exception e){}
     }
 }
 
@@ -517,7 +581,7 @@ class EndClient implements Runnable
     @Override
     public void run()
     {
-        Client.output.println("this chat ends");
+        try{Client.output.println("this chat ends");}catch(Exception e){}
         try{Client.socket.close();}catch(Exception e){}
     }
 }
@@ -529,5 +593,21 @@ class Pair
     {
         this.email1=email1;
         this.email2=email2;
+    }
+}
+
+class GetIP implements Runnable
+{
+    @Override
+    public void run()
+    {
+        try {
+            while(ChatFragment.systemipaddress==null||ChatFragment.systemipaddress.length()<=15) {
+                URL url_name = new URL("https://bot.whatismyipaddress.com");
+                BufferedReader sc = new BufferedReader(new InputStreamReader(url_name.openStream()));
+                ChatFragment.systemipaddress = sc.readLine().trim();
+            }
+        }
+        catch(Exception e){}
     }
 }

@@ -1,5 +1,6 @@
 package com.example.panacea.ui.chat;
 
+import android.graphics.Color;
 import android.net.InetAddresses;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -71,7 +72,7 @@ public class ChatFragment extends Fragment {
     static String serverIp;
     static int serverPort;
     static String ip;
-    static String systemipaddress;
+    static String systemipaddress,systemipv4;
     static int port;
     static FragmentActivity fa;
     static String role;
@@ -162,7 +163,8 @@ public class ChatFragment extends Fragment {
                     data.put("name",nameText.getText().toString());
                     ip=Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
                     data.put("private ip",ip);
-                    data.put("public ip",systemipaddress);
+                    data.put("public ipv6",systemipaddress);
+                    data.put("public ipv4",systemipv4);
                     data.put("port",port);
                     DocumentSnapshot doc=task.getResult();
                     if(!doc.exists())
@@ -329,10 +331,10 @@ public class ChatFragment extends Fragment {
                 if(task.isSuccessful()) {
                     DocumentSnapshot doc=task.getResult();
                     serverPort=Integer.parseInt(doc.get("port").toString());
-                    if(doc.get("public ipv4").toString().equals(systemipaddress))
+                    if(doc.get("public ipv4").toString().equals(systemipv4)&&(!doc.get("private ip").toString().equals("0.0.0.0"))&&(!ip.equals("0.0.0.0")))
                         serverIp=doc.get("private ip").toString();
                     else
-                        serverIp=doc.get("public ip").toString();
+                        serverIp=doc.get("public ipv6").toString();
                     setupConnection();
                 }
             }
@@ -371,10 +373,14 @@ public class ChatFragment extends Fragment {
         Runnable myRunnable=new Runnable() {
             @Override
             public void run() {
-                messages[messagecount].setLayoutParams(params);
+                LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 120);
+                lp.setMargins(0,10,0,10);
+                messages[messagecount].setLayoutParams(lp);
                 messages[messagecount].setTextSize(18);
                 messages[messagecount].setText(aname+": "+i);
                 messages[messagecount].setGravity(Gravity.LEFT);
+                messages[messagecount].setTextColor(Color.BLACK);
+                messages[messagecount].setBackgroundColor(Color.YELLOW);
                 myChatBox.addView(messages[messagecount]);
                 messagecount++;
                 if(messagecount==1000)
@@ -391,10 +397,14 @@ public class ChatFragment extends Fragment {
         Runnable myRunnable=new Runnable(){
             @Override
             public void run() {
-                messages[messagecount].setLayoutParams(params);
+                LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 120);
+                lp.setMargins(0,10,0,10);
+                messages[messagecount].setLayoutParams(lp);
                 messages[messagecount].setTextSize(18);
                 messages[messagecount].setText("Me: "+i);
                 messages[messagecount].setGravity(Gravity.RIGHT);
+                messages[messagecount].setTextColor(Color.BLACK);
+                messages[messagecount].setBackgroundColor(Color.CYAN);
                 myChatBox.addView(messages[messagecount]);
                 messagecount++;
                 if(messagecount==1000)
@@ -445,6 +455,7 @@ class Server implements Runnable
                 String inp = input.readLine();
                 if(inp.equals("this chat ends")) {
                     output.close();
+                    output=null;
                     int a=2/0;
                     break;
                 }
@@ -520,6 +531,7 @@ class Client implements Runnable
                 String inp = input.readLine();
                 if(inp.equals("this chat ends")) {
                     output.close();
+                    output=null;
                     int a=2/0;
                     break;
                 }
@@ -602,11 +614,12 @@ class GetIP implements Runnable
     public void run()
     {
         try {
-            while(ChatFragment.systemipaddress==null||ChatFragment.systemipaddress.length()<=15) {
-                URL url_name = new URL("https://bot.whatismyipaddress.com");
-                BufferedReader sc = new BufferedReader(new InputStreamReader(url_name.openStream()));
-                ChatFragment.systemipaddress=sc.readLine().trim();
-            }
+            URL url_name = new URL("https://ipv6bot.whatismyipaddress.com");
+            BufferedReader sc = new BufferedReader(new InputStreamReader(url_name.openStream()));
+            ChatFragment.systemipaddress=sc.readLine().trim();
+            URL url_name1 = new URL("https://ipv4bot.whatismyipaddress.com");
+            BufferedReader sc1 = new BufferedReader(new InputStreamReader(url_name1.openStream()));
+            ChatFragment.systemipv4=sc1.readLine().trim();
         }
         catch(Exception e){}
     }

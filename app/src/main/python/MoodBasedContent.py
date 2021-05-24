@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
 from apyori import apriori
-from urllib.request import Request, urlopen
 
 def preprocessing(dataframe):
     memes=[]
@@ -84,9 +83,9 @@ def predict_content(mood_points):
     Y_meme=newdf['Memes'].values
     Y_game=newdf['Games'].values
     Y_movie=newdf['Movies/Series'].values
-    memeTree=DecisionTreeClassifier(criterion='entropy')
-    gameTree=DecisionTreeClassifier(criterion='entropy')
-    movieTree=DecisionTreeClassifier(criterion='entropy')
+    memeTree=DecisionTreeClassifier()
+    gameTree=DecisionTreeClassifier()
+    movieTree=DecisionTreeClassifier()
     memeTree.fit(X,Y_meme)
     gameTree.fit(X,Y_game)
     movieTree.fit(X,Y_movie)

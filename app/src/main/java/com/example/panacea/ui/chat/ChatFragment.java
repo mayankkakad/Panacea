@@ -399,6 +399,7 @@ public class ChatFragment extends Fragment {
             public void run() {
                 LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 120);
                 lp.setMargins(0,10,0,10);
+                messages[messagecount].setPadding(3,0,0,3);
                 messages[messagecount].setLayoutParams(lp);
                 messages[messagecount].setTextSize(18);
                 messages[messagecount].setText("Me: "+i);

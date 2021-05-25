@@ -22,11 +22,14 @@
 
             <TextView
                 android:id="@+id/textView22"
-                android:textSize="30dp"
-                android:textAlignment="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="FAQs" />
+                android:background="#50C878"
+                android:fontFamily="@font/actor"
+                android:text="FAQs"
+                android:textAlignment="center"
+                android:textColor="#fff"
+                android:textSize="30dp" />
 
             <TextView
                 android:id="@+id/textView23"
@@ -40,26 +43,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:textSize="23dp"
-                android:text="Is depression real?"
+                android:fontFamily="@font/actor"
                 android:gravity="start|top"
-                android:inputType="textMultiLine" />
+                android:inputType="textMultiLine"
+                android:text="Is depression real?"
+                android:textColor="#000"
+                android:textSize="23dp" />
 
             <EditText
                 android:id="@+id/editTextTextMultiLine3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:textSize="18dp"
-                android:text="Yes, it is very real and a serious issue"
+                android:fontFamily="@font/actor"
                 android:gravity="start|top"
-                android:inputType="textMultiLine" />
+                android:inputType="textMultiLine"
+                android:text="Yes, it is very real and a serious issue"
+                android:textColor="#000"
+                android:textSize="18dp" />
 
             <TextView
                 android:id="@+id/textView25"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text=""
+                android:textColor="#000"
                 android:textSize="30dp" />
 
             <EditText
@@ -67,9 +75,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:fontFamily="@font/actor"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
                 android:text="Is depression an illness?"
+                android:textColor="#000"
                 android:textSize="23dp" />
 
             <EditText
@@ -77,9 +87,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:fontFamily="@font/actor"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
                 android:text="Yes, it falls under the category of “mentally ill”"
+                android:textColor="#000"
                 android:textSize="18dp" />
 
             <TextView
@@ -94,9 +106,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:fontFamily="@font/actor"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
                 android:text="Is depression curable?"
+                android:textColor="#000"
                 android:textSize="23dp" />
 
             <EditText
@@ -104,9 +118,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:fontFamily="@font/actor"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
                 android:text="Yes, it is"
+                android:textColor="#000"
                 android:textSize="18dp" />
 
             <TextView
@@ -121,9 +137,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:fontFamily="@font/actor"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
                 android:text="Can depression be cured without the help of doctors?"
+                android:textColor="#000"
                 android:textSize="23dp" />
 
             <EditText
@@ -131,9 +149,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:fontFamily="@font/actor"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
                 android:text="It is preferred to consult a psychiatrist, however, it can be cured otherwise too"
+                android:textColor="#000"
                 android:textSize="18dp" />
 
             <TextView
@@ -148,9 +168,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:fontFamily="@font/actor"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
                 android:text="Is Yoga helpful?"
+                android:textColor="#000"
                 android:textSize="23dp" />
 
             <EditText
@@ -158,9 +180,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:fontFamily="@font/actor"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
                 android:text="Yes. Yoga and other medications do help to divert thoughts"
+                android:textColor="#000"
                 android:textSize="18dp" />
 
             <TextView
@@ -175,9 +199,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:fontFamily="@font/actor"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
                 android:text="Does medication cause side effects?"
+                android:textColor="#000"
                 android:textSize="23dp" />
 
             <EditText
@@ -185,9 +211,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:fontFamily="@font/actor"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
                 android:text="Depending on the amount of required dosage. There are a few medicines which don’t cause side effects, but in most cases, there might be minimal side effects"
+                android:textColor="#000"
                 android:textSize="18dp" />
 
             <TextView
@@ -202,9 +230,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:fontFamily="@font/actor"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
                 android:text="How do I differentiate whether I am sad or depressed?"
+                android:textColor="#000"
                 android:textSize="23dp" />
 
             <EditText
@@ -212,9 +242,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:fontFamily="@font/actor"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
                 android:text="Depression is a mental state, while sadness is an emotion. Sadness has an antonym, happiness. Depression doesn’t have an antonym. Prolonged sadness can be a symptom of depression"
+                android:textColor="#000"
                 android:textSize="18dp" />
 
             <TextView
@@ -229,9 +261,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:fontFamily="@font/actor"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
                 android:text="Can kids/senior citizens/physically disabled/LGBTQ community have depression?"
+                android:textColor="#000"
                 android:textSize="23dp" />
 
             <EditText
@@ -239,9 +273,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:fontFamily="@font/actor"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
                 android:text="Yes. All of them can suffer through depression. Kids hardly have a chance though, generally kids below 12 might not go through it"
+                android:textColor="#000"
                 android:textSize="18dp" />
 
             <TextView
@@ -256,9 +292,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:fontFamily="@font/actor"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
                 android:text="Is depression contagious?"
+                android:textColor="#000"
                 android:textSize="23dp" />
 
             <EditText
@@ -266,9 +304,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:fontFamily="@font/actor"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
                 android:text="No, not all. However, discussing depressing topics with a patient might make you a little depressed"
+                android:textColor="#000"
                 android:textSize="18dp" />
 
             <TextView
@@ -283,9 +323,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:fontFamily="@font/actor"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
                 android:text="Is depression hereditary?"
+                android:textColor="#000"
                 android:textSize="23dp" />
 
             <EditText
@@ -293,9 +335,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:fontFamily="@font/actor"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
                 android:text="No"
+                android:textColor="#000"
                 android:textSize="18dp" />
 
             <TextView

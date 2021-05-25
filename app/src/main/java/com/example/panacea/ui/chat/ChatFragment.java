@@ -33,6 +33,7 @@ import com.example.panacea.SignUp;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -42,6 +43,7 @@ import org.w3c.dom.Document;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -80,6 +82,7 @@ public class ChatFragment extends Fragment {
     static ViewGroup.LayoutParams params;
     static TextView messages[];
     static int messagecount=0;
+    static Button reportButton;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
@@ -97,10 +100,12 @@ public class ChatFragment extends Fragment {
         messages=new TextView[1000];
         db=FirebaseFirestore.getInstance();
         chatusers=new Vector<String>();
+        reportButton=(Button)root.findViewById(R.id.button22);
         pairs=new Vector<Pair>();
         fa=getActivity();
         oppName=(TextView)root.findViewById(R.id.textView49);
         oppName.setVisibility(View.GONE);
+        reportButton.setVisibility(View.GONE);
         goChat=(Button)root.findViewById(R.id.button19);
         nameText=(EditText)root.findViewById(R.id.editTextTextPersonName);
         message=(EditText)root.findViewById(R.id.editTextTextPersonName4);
@@ -118,12 +123,14 @@ public class ChatFragment extends Fragment {
                         for(int i=0;i<1000;i++)
                             messages[i]=new TextView(getActivity());
                         oppName.setVisibility(View.VISIBLE);
+                        reportButton.setVisibility(View.VISIBLE);
                         nameText.setVisibility(View.GONE);
                         searchPeople();
                     }
                 }
                 else {
                     oppName.setVisibility(View.GONE);
+                    reportButton.setVisibility(View.GONE);
                     nameText.setVisibility(View.VISIBLE);
                     goChat.setText("Chat");
                     chatting=false;
@@ -143,6 +150,25 @@ public class ChatFragment extends Fragment {
                     }
                     myChatBox.removeAllViews();
                 }
+            }
+        });
+        reportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Map<String,Object> tmap=new HashMap<>();
+                db.collection("users").document(anonymous).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful())
+                        {
+                            DocumentSnapshot doc=task.getResult();
+                            if(doc.get("reports")==null)
+                                db.collection("users").document(anonymous).update("reports",1);
+                            else
+                                db.collection("users").document(anonymous).update("reports", FieldValue.increment(1));
+                        }
+                    }
+                });
             }
         });
         return root;
@@ -295,6 +321,7 @@ public class ChatFragment extends Fragment {
                     if(anonymous==null)
                     {
                         oppName.setVisibility(View.GONE);
+                        reportButton.setVisibility(View.GONE);
                         nameText.setVisibility(View.VISIBLE);
                         db.collection("chat").document(MainActivity.loggedemail).delete();
                         Toast.makeText(getActivity(),"No Users Available",Toast.LENGTH_SHORT).show();

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.helpline.HelplineFragment" >
+    android:background="#DFDFDF"
+    tools:context=".ui.helpline.HelplineFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -19,15 +19,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textView19"
-                android:textSize="30dp"
-                android:textAlignment="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Helpline" />
+                android:fontFamily="@font/actor"
+                android:text="Helpline"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="30dp" />
 
             <TextView
                 android:id="@+id/textView20"
@@ -38,19 +40,23 @@
 
             <TextView
                 android:id="@+id/textView24"
-                android:textSize="23dp"
-                android:textAlignment="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Government of India:" />
+                android:fontFamily="@font/actor"
+                android:text="Government of India:"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="23dp" />
 
             <TextView
                 android:id="@+id/textView35"
-                android:textSize="18dp"
-                android:textAlignment="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="18005990019" />
+                android:fontFamily="@font/actor"
+                android:text="18005990019"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="18dp" />
 
             <TextView
                 android:id="@+id/textView36"
@@ -63,16 +69,20 @@
                 android:id="@+id/textView37"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/actor"
                 android:text="Jeevan Aastha Helpline:"
                 android:textAlignment="center"
+                android:textColor="#000000"
                 android:textSize="23dp" />
 
             <TextView
                 android:id="@+id/textView38"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/actor"
                 android:text="18002333330"
                 android:textAlignment="center"
+                android:textColor="#000000"
                 android:textSize="18dp" />
 
             <TextView
@@ -86,16 +96,20 @@
                 android:id="@+id/textView40"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/actor"
                 android:text="AASRA:"
                 android:textAlignment="center"
+                android:textColor="#000000"
                 android:textSize="23dp" />
 
             <TextView
                 android:id="@+id/textView41"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/actor"
                 android:text="09820466726"
                 android:textAlignment="center"
+                android:textColor="#000000"
                 android:textSize="18dp" />
 
             <TextView
@@ -109,16 +123,20 @@
                 android:id="@+id/textView43"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/actor"
                 android:text="COOJ Mental Health Foundation ( GOA ):"
                 android:textAlignment="center"
+                android:textColor="#000000"
                 android:textSize="23dp" />
 
             <TextView
                 android:id="@+id/textView44"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/actor"
                 android:text="08322252525"
                 android:textAlignment="center"
+                android:textColor="#000000"
                 android:textSize="18dp" />
 
             <TextView
@@ -132,16 +150,20 @@
                 android:id="@+id/textView46"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/actor"
                 android:text="VANDRAVELA FOUNDATION:"
                 android:textAlignment="center"
+                android:textColor="#000000"
                 android:textSize="23dp" />
 
             <TextView
                 android:id="@+id/textView47"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/actor"
                 android:text="18602662345"
                 android:textAlignment="center"
+                android:textColor="#000000"
                 android:textSize="18dp" />
 
             <TextView

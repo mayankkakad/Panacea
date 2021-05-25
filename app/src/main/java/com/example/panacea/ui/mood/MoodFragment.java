@@ -281,6 +281,7 @@ public class MoodFragment extends Fragment {
         myScrollView.setVisibility(View.VISIBLE);
         myLinearLayout.setVisibility(View.VISIBLE);
         heading.setVisibility(View.GONE);
+        myLinearLayout.setBackgroundColor(Integer.parseInt("#DFDFDF"));
         params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 120);
         String memelistarr="";
         String gamelistarr="";
@@ -374,6 +375,9 @@ public class MoodFragment extends Fragment {
             j = 0;
             for (int i = 0; i < gameTexts.length; i++, j += 2) {
                 gameTexts[i] = new Button(getActivity());
+                gameTexts[i].setBackgroundColor(Integer.parseInt("#CBCCCF"));
+                gameTexts[i].setTextColor(Integer.parseInt("#000000"));
+                gameTexts[i].setPadding(2,1,0,1);
                 gameTexts[i].setLayoutParams(params);
                 gameTexts[i].setText(myGames[j]);
                 gameTexts[i].setId(j + 1);
@@ -405,6 +409,8 @@ public class MoodFragment extends Fragment {
             j = 0;
             for (int i = 0; i < movieTexts.length; i++, j += 2) {
                 movieTexts[i] = new TextView(getActivity());
+                movieTexts[i].setTextColor(Integer.parseInt("#000000"));
+                movieTexts[i].setPadding(2,1,0,1);
                 movieTexts[i].setLayoutParams(params);
                 movieTexts[i].setText(myMovies[j] + " (" + myMovies[j + 1] + ")");
                 myLinearLayout.addView(movieTexts[i]);
@@ -421,6 +427,7 @@ public class MoodFragment extends Fragment {
         });
         feedbackButton.setGravity(Gravity.CENTER_HORIZONTAL);
         myLinearLayout.addView(feedbackButton);
+        feedbackButton.setBackgroundColor(Integer.parseInt("#CBCCCF"));
     }
     public void gotoGameLink(int id)
     {

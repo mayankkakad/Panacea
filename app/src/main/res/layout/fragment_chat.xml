@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#D3D3D3"
+    android:background="#DFDFDF"
     tools:context=".ui.chat.ChatFragment">
 
     <EditText
@@ -41,7 +41,7 @@
         android:id="@+id/scrollView2"
         android:layout_width="380dp"
         android:layout_height="531dp"
-        android:background="#D3D3D3D3"
+        android:background="#DFDFDF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.483"

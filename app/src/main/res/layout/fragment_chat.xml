@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.chat.ChatFragment" >
+    android:background="#D3D3D3"
+    tools:context=".ui.chat.ChatFragment">
 
     <EditText
         android:id="@+id/editTextTextPersonName"
@@ -14,6 +14,7 @@
         android:ems="10"
         android:hint="Display Name"
         android:inputType="textPersonName"
+        android:textColor="#00000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.129"
@@ -25,18 +26,22 @@
         android:id="@+id/button19"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:width="16px"
+        android:height="8px"
+        android:background="#CBCCCF"
         android:text="Chat"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.69"
+        app:layout_constraintHorizontal_bias="0.595"
         app:layout_constraintStart_toEndOf="@+id/editTextTextPersonName"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.023" />
+        app:layout_constraintVertical_bias="0.029" />
 
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="380dp"
         android:layout_height="531dp"
+        android:background="#D3D3D3D3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.483"
@@ -58,12 +63,13 @@
         android:ems="10"
         android:hint="Type Message here"
         android:inputType="textPersonName"
+        android:textColor="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.207"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/scrollView2"
-        app:layout_constraintVertical_bias="0.882" />
+        app:layout_constraintVertical_bias="0.822" />
 
     <Button
         android:id="@+id/button20"
@@ -71,23 +77,28 @@
         android:layout_height="66dp"
         android:layout_marginStart="3dp"
         android:layout_marginTop="36dp"
+        android:width="16px"
+        android:height="8px"
+        android:background="#CBCCCF"
         android:text="SEND"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.395"
         app:layout_constraintStart_toEndOf="@+id/editTextTextPersonName4"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.974" />
+        app:layout_constraintVertical_bias="0.96" />
 
     <TextView
         android:id="@+id/textView49"
         android:layout_width="217dp"
         android:layout_height="53dp"
-        android:textSize="20dp"
+        android:capitalize="words"
         android:text="TextView"
+        android:textColor="#000000"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.134"
+        app:layout_constraintHorizontal_bias="0.229"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.023" />

@@ -375,12 +375,13 @@ public class ChatFragment extends Fragment {
             public void run() {
                 LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 120);
                 lp.setMargins(0,10,0,10);
+                messages[messagecount].setPadding(3,1,0,0);
                 messages[messagecount].setLayoutParams(lp);
                 messages[messagecount].setTextSize(18);
                 messages[messagecount].setText(aname+": "+i);
                 messages[messagecount].setGravity(Gravity.LEFT);
                 messages[messagecount].setTextColor(Color.BLACK);
-                messages[messagecount].setBackgroundColor(Color.YELLOW);
+                messages[messagecount].setBackgroundColor(Color.WHITE);
                 myChatBox.addView(messages[messagecount]);
                 messagecount++;
                 if(messagecount==1000)
@@ -399,12 +400,13 @@ public class ChatFragment extends Fragment {
             public void run() {
                 LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 120);
                 lp.setMargins(0,10,0,10);
+                messages[messagecount].setPadding(0,1,3,0);
                 messages[messagecount].setLayoutParams(lp);
                 messages[messagecount].setTextSize(18);
                 messages[messagecount].setText("Me: "+i);
                 messages[messagecount].setGravity(Gravity.RIGHT);
                 messages[messagecount].setTextColor(Color.BLACK);
-                messages[messagecount].setBackgroundColor(Color.CYAN);
+                messages[messagecount].setBackgroundColor(Color.GREEN);
                 myChatBox.addView(messages[messagecount]);
                 messagecount++;
                 if(messagecount==1000)

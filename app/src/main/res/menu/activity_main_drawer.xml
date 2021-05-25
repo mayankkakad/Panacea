@@ -25,8 +25,5 @@
         <item
             android:id="@+id/nav_faq"
             android:title="@string/menu_faq" />
-        <item
-            android:id="@+id/nav_logout"
-            android:title="@string/menu_logout" />
     </group>
 </menu>

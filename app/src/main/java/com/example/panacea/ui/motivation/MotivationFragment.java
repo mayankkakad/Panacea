@@ -26,7 +26,7 @@ import com.example.panacea.R;
 public class MotivationFragment extends Fragment {
 
     private MotivationViewModel motivationViewModel;
-    EditText quoteBox;
+    TextView quoteBox;
     TextView authorBox;
     Button nextQuote,previousQuote,submitQuote,likeButton,dislikeButton;
     static int curr_quote=0;
@@ -43,7 +43,7 @@ public class MotivationFragment extends Fragment {
             public void onChanged(@Nullable String s) {
             }
         });
-        quoteBox=(EditText)root.findViewById(R.id.editTextTextMultiLine2);
+        quoteBox=(TextView)root.findViewById(R.id.editTextTextMultiLine2);
         authorBox=(TextView)root.findViewById(R.id.textView16);
         nextQuote=(Button)root.findViewById(R.id.button15);
         previousQuote=(Button)root.findViewById(R.id.button16);

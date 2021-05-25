@@ -30,17 +30,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId()==R.id.nav_logout)
-            mFirebaseAuth.signOut();
-        loggedemail=null;
-        Intent i=new Intent(MainActivity.this,MainActivity.class);
-        startActivity(i);
-        return true;
-    }
 
     public static String loggedemail=null;
 

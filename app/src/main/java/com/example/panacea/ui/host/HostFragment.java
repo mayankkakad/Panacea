@@ -250,6 +250,7 @@ public class HostFragment extends Fragment {
     public void showRequests() {
         myLeft=(LinearLayout)root.findViewById(R.id.myLeft);
         myRight=(LinearLayout)root.findViewById(R.id.myRight);
+        lparams=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,120);
         tparams=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,120);
         db.collection(Constants.sport).document(MainActivity.loggedemail).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override

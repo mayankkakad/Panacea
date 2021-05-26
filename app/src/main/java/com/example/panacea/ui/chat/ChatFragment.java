@@ -83,7 +83,7 @@ public class ChatFragment extends Fragment {
     static TextView messages[];
     static int messagecount=0;
     static Button reportButton;
-    boolean reported=false;
+    boolean reported;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
@@ -124,8 +124,7 @@ public class ChatFragment extends Fragment {
                         for(int i=0;i<1000;i++)
                             messages[i]=new TextView(getActivity());
                         oppName.setVisibility(View.VISIBLE);
-                        if(!reported)
-                            reportButton.setVisibility(View.VISIBLE);
+                        reportButton.setVisibility(View.VISIBLE);
                         nameText.setVisibility(View.GONE);
                         searchPeople();
                     }
@@ -374,6 +373,7 @@ public class ChatFragment extends Fragment {
 
     public void setupConnection()
     {
+        reported=false;
         db.collection("chat").document(MainActivity.loggedemail).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {

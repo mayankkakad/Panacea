@@ -412,7 +412,7 @@ public class ChatFragment extends Fragment {
                 messages[messagecount].setText(aname+": "+i);
                 messages[messagecount].setGravity(Gravity.LEFT);
                 messages[messagecount].setTextColor(Color.BLACK);
-                messages[messagecount].setBackgroundColor(Color.LTGRAY);
+                messages[messagecount].setBackgroundColor(Color.parseColor("#dcdcdc"));
                 myChatBox.addView(messages[messagecount]);
                 messagecount++;
                 if(messagecount==1000)
@@ -437,7 +437,7 @@ public class ChatFragment extends Fragment {
                 messages[messagecount].setText("Me: "+i);
                 messages[messagecount].setGravity(Gravity.RIGHT);
                 messages[messagecount].setTextColor(Color.BLACK);
-                messages[messagecount].setBackgroundColor(Color.GREEN);
+                messages[messagecount].setBackgroundColor(Color.parseColor("#96DEAE"));
                 myChatBox.addView(messages[messagecount]);
                 messagecount++;
                 if(messagecount==1000)

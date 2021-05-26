@@ -83,6 +83,7 @@ public class ChatFragment extends Fragment {
     static TextView messages[];
     static int messagecount=0;
     static Button reportButton;
+    boolean reported=false;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
@@ -123,7 +124,8 @@ public class ChatFragment extends Fragment {
                         for(int i=0;i<1000;i++)
                             messages[i]=new TextView(getActivity());
                         oppName.setVisibility(View.VISIBLE);
-                        reportButton.setVisibility(View.VISIBLE);
+                        if(!reported)
+                            reportButton.setVisibility(View.VISIBLE);
                         nameText.setVisibility(View.GONE);
                         searchPeople();
                     }
@@ -166,6 +168,8 @@ public class ChatFragment extends Fragment {
                                 db.collection("users").document(anonymous).update("reports",1);
                             else
                                 db.collection("users").document(anonymous).update("reports", FieldValue.increment(1));
+                            reported=true;
+                            reportButton.setVisibility(View.GONE);
                         }
                     }
                 });
@@ -514,6 +518,8 @@ class ServerSend implements Runnable
         if(!Server.senddata.equals("")) {
             ChatFragment.send(Server.senddata);
             Server.output.println(Server.senddata);
+            if(Server.senddata.equals("this chat ends"))
+                try{Server.input.close();}catch(Exception e){}
         }
     }
 }
@@ -603,6 +609,8 @@ class ClientSend implements Runnable
         if(!Client.senddata.equals("")) {
             ChatFragment.send(Client.senddata);
             Client.output.println(Client.senddata);
+            if(Client.senddata.equals("this chat ends"))
+                try{Client.input.close();}catch(Exception e){}
         }
     }
 }

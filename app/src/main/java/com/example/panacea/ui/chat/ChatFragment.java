@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -84,6 +85,7 @@ public class ChatFragment extends Fragment {
     static int messagecount=0;
     static Button reportButton;
     boolean reported;
+    static ScrollView sv;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
@@ -97,6 +99,8 @@ public class ChatFragment extends Fragment {
         if(systemipaddress==null)
             systemipaddress="";
         myChatBox=(LinearLayout)root.findViewById(R.id.myChatBox);
+        sv=(ScrollView)root.findViewById(R.id.scrollView2);
+        sv.setVisibility(View.GONE);
         params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 120);
         messages=new TextView[1000];
         db=FirebaseFirestore.getInstance();
@@ -150,6 +154,7 @@ public class ChatFragment extends Fragment {
                         y.start();
                     }
                     myChatBox.removeAllViews();
+                    sv.setVisibility(View.GONE);
                 }
             }
         });
@@ -373,6 +378,7 @@ public class ChatFragment extends Fragment {
 
     public void setupConnection()
     {
+        sv.setVisibility(View.VISIBLE);
         reported=false;
         db.collection("chat").document(MainActivity.loggedemail).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override

@@ -41,14 +41,15 @@
 
     <ScrollView
         android:id="@+id/scrollView2"
-        android:layout_width="374dp"
-        android:layout_height="516dp"
+        android:layout_width="380dp"
+        android:layout_height="513dp"
         android:background="#fff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView49"
-        app:layout_constraintVertical_bias="0.324">
+        app:layout_constraintTop_toBottomOf="@+id/textView50"
+        app:layout_constraintVertical_bias="0.067">
 
         <LinearLayout
             android:id="@+id/myChatBox"
@@ -121,5 +122,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.016" />
+
+    <TextView
+        android:id="@+id/textView50"
+        android:layout_width="166dp"
+        android:layout_height="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.461"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.095" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

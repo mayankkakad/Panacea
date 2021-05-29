@@ -44,12 +44,12 @@
         android:layout_width="380dp"
         android:layout_height="513dp"
         android:background="#fff"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/editTextTextPersonName4"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.488"
+        app:layout_constraintHorizontal_bias="0.516"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView50"
-        app:layout_constraintVertical_bias="0.067">
+        app:layout_constraintVertical_bias="0.795">
 
         <LinearLayout
             android:id="@+id/myChatBox"
